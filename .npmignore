@@ -1,0 +1,16 @@
+test-cases
+*.test.*
+*.ts
+!*.d.ts
+*.claude
+.dirnev
+.editorconfig
+.envrc
+.nvim.lua
+*.local
+*.local.*
+biome.json
+flake.*
+nix
+scraper
+tsconfig.json

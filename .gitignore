@@ -1,0 +1,10 @@
+.direnv
+result
+node_modules
+*.local
+*.local.*
+*.ast.txt
+tmp
+src/**/*.js
+src/**/*.d.ts
+src/**/*.js.map

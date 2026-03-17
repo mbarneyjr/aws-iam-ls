@@ -1,0 +1,32 @@
+{
+  "name": "aws-iam-ls",
+  "version": "0.0.0",
+  "type": "module",
+  "bin": "./src/server.js",
+  "scripts": {
+    "start": "node src/server.ts --stdio",
+    "biome": "biome check",
+    "biome:fix": "biome check --write",
+    "test": "node --test",
+    "build": "tsc",
+    "clean": "find src -name '*.js' -o -name '*.d.ts' | grep -v node_modules | xargs rm -f"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mbarneyjr/aws-iam-ls.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mbarneyjr/aws-iam-ls/issues"
+  },
+  "homepage": "https://github.com/mbarneyjr/aws-iam-ls#readme",
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.7",
+    "@types/node": "^25.5.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "vscode-languageserver": "^9.0.1",
+    "vscode-languageserver-textdocument": "^1.0.12"
+  }
+}

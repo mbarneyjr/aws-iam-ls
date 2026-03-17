@@ -1,0 +1,40 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "vcs": {
+    "enabled": true,
+    "useIgnoreFile": true,
+    "clientKind": "git"
+  },
+  "files": {
+    "includes": ["**"]
+  },
+  "formatter": {
+    "useEditorconfig": true,
+    "enabled": true,
+    "lineWidth": 120
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "complexity": {
+        "noStaticOnlyClass": "off",
+        "noThisInStatic": "off"
+      },
+      "correctness": {
+        "noUnusedPrivateClassMembers": "off"
+      },
+      "nursery": {
+        "noFloatingPromises": "error",
+        "noMisusedPromises": "error"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "enabled": true,
+      "quoteStyle": "single",
+      "trailingCommas": "all"
+    }
+  }
+}
