@@ -1,0 +1,18 @@
+---
+includes:
+  - aws:PrincipalArn
+  - aws:PrincipalAccount
+  - aws:PrincipalOrgID
+excludes:
+  - aws:SourceIp
+  - aws:TagKeys
+  - s3:ResourceAccount
+---
+Statement:
+  - Effect: Allow
+    Action:
+      - s3:GetObject
+    Resource: "*"
+    Condition:
+      StringEquals:
+        aws:P$0

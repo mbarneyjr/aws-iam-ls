@@ -1,0 +1,15 @@
+---
+exact: true
+includes:
+  - Sid
+  - Action
+  - NotAction
+  - Resource
+  - NotResource
+  - Condition
+  - Principal
+  - NotPrincipal
+---
+Statement:
+  - 'Effect': Allow
+    $0

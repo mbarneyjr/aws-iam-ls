@@ -1,0 +1,13 @@
+---
+includes:
+  - "arn:aws:s3::123123123123:accesspoint/${AccessPointAlias}"
+excludes:
+  - "arn:aws:s3::123123123123:access-grants/default"
+  - "arn:aws:s3:::${BucketName}"
+---
+Statement:
+  - Effect: Allow
+    Action:
+      - s3:GetObject
+    Resource:
+      - !Sub "arn:aws:s3::123123123123:$0

@@ -1,0 +1,8 @@
+---
+includes:
+  - s3:GetObject
+  - lambda:InvokeFunction
+---
+Statement:
+  - Effect: Allow
+    "Action"$0

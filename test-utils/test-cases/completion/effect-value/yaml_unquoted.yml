@@ -1,0 +1,8 @@
+---
+exact: true
+includes:
+  - Allow
+  - Deny
+---
+Statement:
+  - Effect: $0

@@ -1,0 +1,19 @@
+---
+exact: true
+includes:
+  - Sid
+  - Effect
+  - Principal
+  - NotPrincipal
+  - Action
+  - NotAction
+  - Resource
+  - NotResource
+  - Condition
+---
+Statement:
+  - Effect: Allow
+    Action: '*'
+    Resource: '*'
+  - $0
+Version: version

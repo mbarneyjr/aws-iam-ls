@@ -11,7 +11,9 @@
     "build": "tsc",
     "clean": "find src test-utils -name '*.js' -o -name '*.d.ts' | grep -v node_modules | xargs rm -f",
     "grammars": "nix build .#grammars && rm -rf src/grammars && cp -rL result/ src/grammars && chmod -R u+w src/grammars && rm result",
-    "scraper": "cd scraper && npm run scrape"
+    "scraper": "cd scraper && npm run scrape",
+    "create-test-case-asts": "node test-utils/create-test-case-asts.ts",
+    "remove-test-case-asts": "find test-utils/test-cases -type f \\( -name '*.ast.*' \\) -delete"
   },
   "repository": {
     "type": "git",
@@ -25,7 +27,8 @@
   "devDependencies": {
     "@biomejs/biome": "^2.4.7",
     "@types/node": "^25.5.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "yaml": "^2.8.3"
   },
   "dependencies": {
     "vscode-languageserver": "^9.0.1",

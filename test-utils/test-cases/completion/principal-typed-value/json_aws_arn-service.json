@@ -1,0 +1,18 @@
+---
+includes:
+  - iam
+excludes:
+  - "lambda.amazonaws.com"
+---
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject"],
+      "Resource": "*",
+      "Principal": {
+        "AWS": ["arn:aws:$0"]
+      }
+    }
+  ]
+}

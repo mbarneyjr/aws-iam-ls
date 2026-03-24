@@ -1,0 +1,12 @@
+---
+exact: true
+includes:
+  - Allow
+---
+{
+  "Statement": [
+    {
+      "Effect": "A$0"
+    }
+  ]
+}

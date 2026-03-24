@@ -1,0 +1,15 @@
+---
+exact: true
+includes: []
+---
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject"],
+      "Resource": [
+        $0
+      ]
+    }
+  ]
+}

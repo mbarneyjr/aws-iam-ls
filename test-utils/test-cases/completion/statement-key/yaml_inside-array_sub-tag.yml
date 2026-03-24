@@ -1,0 +1,9 @@
+---
+exact: true
+includes: []
+---
+Statement:
+  - Effect: Allow
+    Resource:
+      - !Sub ${Bucket.Arn}
+      $0

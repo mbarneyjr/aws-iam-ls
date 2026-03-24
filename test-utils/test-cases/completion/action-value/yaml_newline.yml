@@ -1,0 +1,19 @@
+---
+includes:
+excludes:
+  - s3:GetObject
+  - lambda:InvokeFunction
+  - Sid
+  - Effect
+  - Principal
+  - NotPrincipal
+  - Action
+  - NotAction
+  - Resource
+  - NotResource
+  - Condition
+---
+Statement:
+  - Effect: Allow
+    Action:
+      $0

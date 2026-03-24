@@ -1,0 +1,12 @@
+---
+includes:
+  - aws
+  - aws-us-gov
+  - aws-cn
+---
+Statement:
+  - Effect: Allow
+    Action:
+      - s3:GetObject
+    Resource:
+      - !Sub "arn:$0

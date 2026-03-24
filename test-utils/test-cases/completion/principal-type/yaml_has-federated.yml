@@ -1,0 +1,16 @@
+---
+includes:
+  - "AWS"
+  - "Service"
+  - "CanonicalUser"
+excludes:
+  - "Federated"
+---
+Statement:
+  - Effect: Allow
+    Action:
+      - s3:GetObject
+    Resource: "*"
+    Principal:
+      Federated: cognito-identity.amazonaws.com
+      $0

@@ -1,0 +1,28 @@
+---
+includes:
+  - AWS
+  - Service
+  - Federated
+  - CanonicalUser
+---
+{
+  "Resources": {
+    "MyRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": ["s3:GetObject"],
+              "Resource": "*",
+              "Principal": {
+                "$0"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

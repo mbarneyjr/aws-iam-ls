@@ -1,0 +1,17 @@
+---
+includes:
+  - StringEquals
+  - 'ForAllValues:StringEquals'
+---
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject"],
+      "Resource": "*",
+      "Condition": {
+        "$0
+      }
+    }
+  ]
+}

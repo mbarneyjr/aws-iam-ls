@@ -1,0 +1,16 @@
+---
+includes:
+  - "AWS"
+  - "Federated"
+  - "CanonicalUser"
+excludes:
+  - "Service"
+---
+Statement:
+  - Effect: Allow
+    Action:
+      - s3:GetObject
+    Resource: "*"
+    Principal:
+      Service: lambda.amazonaws.com
+      $0

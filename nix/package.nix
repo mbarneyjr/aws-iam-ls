@@ -7,7 +7,12 @@ buildNpmPackage {
   pname = "aws-iam-ls";
   version = "0.0.0";
   src = ./..;
-  npmDepsHash = "sha256-+Q+XaeW6Sfqt48NzDNWfKN8wIJO+dp5EMku+JUt8Ns8=";
+  npmDepsHash = "sha256-Ryiwc4e43RbbuyFvOwTTDXRQfCDO4UbgBcCqJCopO68=";
+  doCheck = true;
+  checkPhase = ''
+    npm test
+    echo "DONE"
+  '';
   meta = {
     description = "AWS IAM Policy Language Server";
     mainProgram = "aws-iam-ls";

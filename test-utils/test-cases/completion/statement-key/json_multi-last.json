@@ -1,0 +1,30 @@
+---
+exact: true
+includes:
+  - Sid
+  - Effect
+  - Principal
+  - NotPrincipal
+  - Action
+  - NotAction
+  - Resource
+  - NotResource
+  - Condition
+---
+{
+  "Statement": [
+    {
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "*"
+    },
+    {
+    "$0
+    }
+  ]
+}

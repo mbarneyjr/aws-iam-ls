@@ -1,0 +1,19 @@
+---
+includes:
+  - aws:ResourceTag/${TagKey}
+  - aws:RequestTag/${TagKey}
+  - aws:PrincipalTag/${TagKey}
+  - aws:TagKeys
+excludes:
+  - aws:ResourceTag/tag-key
+  - aws:RequestTag/tag-key
+  - aws:PrincipalTag/tag-key
+---
+Statement:
+  - Effect: Allow
+    Action:
+      - s3:GetObject
+    Resource: "*"
+    Condition:
+      StringEquals:
+        $0

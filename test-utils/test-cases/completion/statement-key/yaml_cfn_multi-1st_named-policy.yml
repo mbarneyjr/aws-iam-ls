@@ -1,0 +1,36 @@
+---
+exact: true
+includes:
+  - Sid
+  - Effect
+  - Action
+  - NotAction
+  - Resource
+  - NotResource
+  - Condition
+  - Principal
+  - NotPrincipal
+---
+Resources:
+  MyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Policies:
+        - PolicyName: S3Access
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - $0
+              - Sid: hello
+                Effect: Allow
+                Action:
+                  - lambda:InvokeFunctionUrl
+                  - s3:GetObject
+                  - ec2:StartInstances
+                  - s3:AssociateAccessGrantsIdentityCenter
+                Resource:
+                  - arn:aws:lambda:us-east-1:123123123123:function:barneyfunc
+                  - arn:aws:ec2:us-east-1:*:instance/*
+                Condition:
+                  StringLike:
+                    lambda:EventSourceToken

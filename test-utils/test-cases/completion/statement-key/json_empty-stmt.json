@@ -1,0 +1,20 @@
+---
+exact: true
+includes:
+  - Sid
+  - Effect
+  - Principal
+  - NotPrincipal
+  - Action
+  - NotAction
+  - Resource
+  - NotResource
+  - Condition
+---
+{
+  "Statement": [
+    {
+    "$0
+    }
+  ]
+}

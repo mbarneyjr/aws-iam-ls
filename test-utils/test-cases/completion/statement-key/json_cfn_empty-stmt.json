@@ -1,0 +1,29 @@
+---
+exact: true
+includes:
+  - Sid
+  - Effect
+  - Principal
+  - NotPrincipal
+  - Action
+  - NotAction
+  - Resource
+  - NotResource
+  - Condition
+---
+{
+  "Resources": {
+    "MyRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+            "$0
+            }
+          ]
+        }
+      }
+    }
+  }
+}

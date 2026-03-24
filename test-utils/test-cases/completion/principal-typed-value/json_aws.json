@@ -1,0 +1,22 @@
+---
+includes:
+  - "*"
+  - "${Account}"
+  - "arn:${Partition}:iam::${Account}:root"
+  - "arn:${Partition}:iam::${Account}:role/${RoleName}"
+excludes:
+  - "cognito-identity.amazonaws.com"
+  - "lambda.amazonaws.com"
+---
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject"],
+      "Resource": "*",
+      "Principal": {
+        "AWS": ["$0"]
+      }
+    }
+  ]
+}

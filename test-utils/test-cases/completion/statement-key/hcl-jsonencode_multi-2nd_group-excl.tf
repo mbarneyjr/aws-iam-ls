@@ -1,0 +1,25 @@
+---
+exact: true
+includes:
+  - Sid
+  - Principal
+  - NotPrincipal
+  - Condition
+---
+resource "aws_iam_policy" "example" {
+  policy = jsonencode({
+    Statement = [
+      {
+        Effect   = "Deny"
+        Action   = "*"
+        Resource = "*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["s3:GetObject"]
+        Resource = "*"
+        $0
+      }
+    ]
+  })
+}

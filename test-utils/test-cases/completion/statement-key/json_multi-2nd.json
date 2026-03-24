@@ -1,0 +1,25 @@
+---
+exact: true
+includes:
+  - Sid
+  - Action
+  - NotAction
+  - Resource
+  - NotResource
+  - Condition
+  - Principal
+  - NotPrincipal
+---
+{
+  "Statement": [
+    {
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "$0
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+---
+excludes:
+  - "arn:aws:s3:us-east-1::access-grants/default"
+  - "arn:aws:s3:::${BucketName}"
+---
+Statement:
+  - Effect: Allow
+    Action:
+      - s3:GetObject
+    Resource:
+      - !Sub "arn:aws:s3:us-east-1::$0

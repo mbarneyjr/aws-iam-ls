@@ -1,0 +1,17 @@
+---
+includes:
+  - aws
+  - aws-us-gov
+  - aws-cn
+---
+Resources:
+  MyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource:
+              - arn:$0

@@ -1,0 +1,22 @@
+---
+includes:
+  - aws
+  - aws-us-gov
+  - aws-cn
+---
+{
+  "Statement": [
+    {
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject"],
+      "Resource": [
+        "arn:$0
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+---
+exact: true
+includes:
+  - Sid
+  - Effect
+  - Action
+  - NotAction
+  - Resource
+  - NotResource
+  - Condition
+  - Principal
+  - NotPrincipal
+---
+Resources:
+  Role:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyDocument:
+            Statement:
+              - $0
+              - Sid: hello

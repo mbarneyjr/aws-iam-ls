@@ -1,0 +1,9 @@
+---
+exact: true
+includes:
+  - Allow
+  - Deny
+---
+Statement:
+  - Sid: 'hello'
+    Effect: $0

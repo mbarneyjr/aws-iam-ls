@@ -1,0 +1,20 @@
+---
+exact: true
+includes:
+  - Sid
+  - Principal
+  - NotPrincipal
+  - Action
+  - NotAction
+  - Resource
+  - NotResource
+  - Condition
+---
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+    "$0
+    }
+  ]
+}

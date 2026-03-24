@@ -6,7 +6,7 @@
     "clientKind": "git"
   },
   "files": {
-    "includes": ["**", "!src/data"]
+    "includes": ["**", "!src/data", "!test-utils/test-cases"]
   },
   "formatter": {
     "useEditorconfig": true,

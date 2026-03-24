@@ -1,0 +1,23 @@
+---
+includes:
+  - aws:PrincipalArn
+  - aws:SourceIp
+  - sts:ExternalId
+  - sts:RoleSessionName
+excludes:
+  - s3:ResourceAccount
+---
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["sts:AssumeRole"],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "$0
+        }
+      }
+    }
+  ]
+}

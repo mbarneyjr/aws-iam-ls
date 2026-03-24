@@ -1,0 +1,22 @@
+---
+includes:
+  - "lambda.amazonaws.com"
+  - "s3.amazonaws.com"
+excludes:
+  - "*"
+  - "arn:${Partition}:iam::${Account}:root"
+---
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject"],
+      "Resource": "*",
+      "Principal": {
+        "Service": [
+          "$0"
+        ]
+      }
+    }
+  ]
+}

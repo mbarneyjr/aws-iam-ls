@@ -1,0 +1,17 @@
+---
+includes:
+  - "cognito-identity.amazonaws.com"
+  - "accounts.google.com"
+  - "arn:${Partition}:iam::${Account}:saml-provider/${SamlProviderName}"
+excludes:
+  - "lambda.amazonaws.com"
+  - "*"
+---
+Statement:
+  - Effect: Allow
+    Action:
+      - s3:GetObject
+    Resource: "*"
+    Principal:
+      Federated:
+        - $0

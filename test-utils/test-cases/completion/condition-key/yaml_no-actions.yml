@@ -1,0 +1,15 @@
+---
+includes:
+  - aws:PrincipalArn
+  - aws:SourceIp
+  - aws:TagKeys
+  - aws:SecureTransport
+excludes:
+  - s3:ResourceAccount
+---
+Statement:
+  - Effect: Allow
+    Resource: "*"
+    Condition:
+      StringEquals:
+        $0

@@ -1,0 +1,43 @@
+---
+includes:
+  - s3:GetObject
+  - lambda:InvokeFunction
+excludes:
+  - Sid
+  - Effect
+  - Principal
+  - NotPrincipal
+  - Action
+  - NotAction
+  - Resource
+  - NotResource
+  - Condition
+---
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Resources": {
+    "Role": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "Policies": [
+          {
+            "PolicyName": "S3Access",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "hello",
+                  "Effect": "Deny",
+                  "Action": [
+                    "$0
+                  ],
+                  "Resource": ["*"]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

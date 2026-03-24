@@ -1,0 +1,15 @@
+---
+exact: true
+includes:
+  - Sid
+  - Resource
+  - NotResource
+  - Condition
+  - Principal
+  - NotPrincipal
+---
+Statement:
+  - Effect: Allow
+    Action:
+      - s3:GetObject
+    $0

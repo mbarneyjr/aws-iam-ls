@@ -1,0 +1,11 @@
+---
+exact: true
+includes: []
+---
+Resources:
+  MyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      PolicyDocument:
+        Statement:
+          - $0

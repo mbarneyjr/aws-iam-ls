@@ -1,0 +1,22 @@
+---
+includes:
+  - AWS
+  - Federated
+  - CanonicalUser
+excludes:
+  - "cognito-identity.amazonaws.com"
+  - "lambda.amazonaws.com"
+---
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject"],
+      "Resource": "*",
+      "Principal": {
+        "Service": ["events.amazonaws.com"],
+        "$0"
+      }
+    }
+  ]
+}

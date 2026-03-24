@@ -1,0 +1,19 @@
+---
+includes:
+  - s3:ResourceAccount
+  - s3:TlsVersion
+  - s3:authType
+  - aws:PrincipalArn
+  - aws:SourceIp
+  - aws:TagKeys
+excludes:
+  - ec2:ResourceTag/${TagKey}
+---
+Statement:
+  - Effect: Allow
+    Action:
+      - s3:GetObject
+    Resource: "*"
+    Condition:
+      StringEquals:
+        $0

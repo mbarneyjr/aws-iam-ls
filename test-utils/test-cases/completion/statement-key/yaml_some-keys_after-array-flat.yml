@@ -1,0 +1,15 @@
+---
+exact: true
+includes:
+  - Sid
+  - Action
+  - NotAction
+  - Condition
+  - Principal
+  - NotPrincipal
+---
+Statement:
+  - Effect: Allow
+    Resource:
+    - !Sub ${Bucket.Arn}
+    $0

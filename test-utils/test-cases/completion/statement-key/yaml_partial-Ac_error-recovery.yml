@@ -1,0 +1,9 @@
+---
+exact: true
+includes:
+  - Action
+---
+Statement:
+  - Effect: Allow
+    Ac$0
+    Resource: "*"

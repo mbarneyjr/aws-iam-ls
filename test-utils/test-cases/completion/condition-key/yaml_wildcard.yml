@@ -1,0 +1,13 @@
+---
+includes:
+  - s3:ResourceAccount
+  - s3:TlsVersion
+  - s3:authType
+---
+Statement:
+  - Effect: Allow
+    Action: s3:*
+    Resource: "*"
+    Condition:
+      StringEquals:
+        $0

@@ -1,0 +1,20 @@
+---
+exact: true
+includes:
+  - Sid
+  - Action
+  - NotAction
+  - Resource
+  - NotResource
+  - Condition
+  - Principal
+  - NotPrincipal
+---
+Resources:
+  MyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            $0

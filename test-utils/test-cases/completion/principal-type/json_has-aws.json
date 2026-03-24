@@ -1,0 +1,21 @@
+---
+includes:
+  - "Service"
+  - "Federated"
+  - "CanonicalUser"
+excludes:
+  - "AWS"
+---
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject"],
+      "Resource": "*",
+      "Principal": {
+        "AWS": ["arn:aws:iam::123456789012:root"],
+        "$0"
+      }
+    }
+  ]
+}

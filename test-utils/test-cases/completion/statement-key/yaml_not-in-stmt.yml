@@ -1,0 +1,7 @@
+---
+exact: true
+includes: []
+---
+Resources:
+  MyRole:
+    $0

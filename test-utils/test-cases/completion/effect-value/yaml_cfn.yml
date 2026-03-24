@@ -1,0 +1,13 @@
+---
+exact: true
+includes:
+  - Allow
+  - Deny
+---
+Resources:
+  MyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Effect: $0

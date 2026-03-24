@@ -1,0 +1,19 @@
+---
+includes:
+  - "lambda.amazonaws.com"
+excludes:
+  - "s3.amazonaws.com"
+  - "*"
+---
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject"],
+      "Resource": "*",
+      "Principal": {
+        "Service": ["lambda$0"]
+      }
+    }
+  ]
+}
