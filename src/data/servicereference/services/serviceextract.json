@@ -1,0 +1,1 @@
+{"name":"serviceextract","actions":{"GetConfig":{"conditionKeys":[],"resources":[],"description":"Grants permission to get required configuration for the AWS Microservice Extractor for .NET desktop client","accessLevel":"Read","resourceTypes":[],"permissionOnly":true}},"resources":[],"conditionKeys":{}}

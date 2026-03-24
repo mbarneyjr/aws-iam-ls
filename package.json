@@ -10,7 +10,8 @@
     "test": "node --test",
     "build": "tsc",
     "clean": "find src test-utils -name '*.js' -o -name '*.d.ts' | grep -v node_modules | xargs rm -f",
-    "grammars": "nix build .#grammars && rm -rf src/grammars && cp -rL result/ src/grammars && chmod -R u+w src/grammars && rm result"
+    "grammars": "nix build .#grammars && rm -rf src/grammars && cp -rL result/ src/grammars && chmod -R u+w src/grammars && rm result",
+    "scraper": "cd scraper && npm run scrape"
   },
   "repository": {
     "type": "git",

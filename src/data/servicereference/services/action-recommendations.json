@@ -1,0 +1,1 @@
+{"name":"action-recommendations","actions":{"ListRecommendedActions":{"conditionKeys":[],"resources":[],"description":"Grants permission to list recommended actions in the AWS Management Console","accessLevel":"List","resourceTypes":[]}},"resources":[],"conditionKeys":{}}

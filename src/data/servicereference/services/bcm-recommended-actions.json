@@ -1,0 +1,1 @@
+{"name":"bcm-recommended-actions","actions":{"ListRecommendedActions":{"conditionKeys":[],"resources":[],"description":"Grants permission to list all recommended actions","accessLevel":"List","resourceTypes":[]}},"resources":[],"conditionKeys":{}}

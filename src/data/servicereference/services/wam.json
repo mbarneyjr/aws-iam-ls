@@ -1,0 +1,1 @@
+{"name":"wam","actions":{"AuthenticatePackager":{"conditionKeys":[],"resources":[],"description":"Allows the Amazon WAM packaging instance to access your application package catalog.","accessLevel":"Write","resourceTypes":[],"permissionOnly":true}},"resources":[],"conditionKeys":{}}

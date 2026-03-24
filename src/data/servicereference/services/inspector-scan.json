@@ -1,0 +1,1 @@
+{"name":"inspector-scan","actions":{"ScanSbom":{"conditionKeys":[],"resources":[],"description":"Grants permission to scan the customer provided SBOM and return vulnerabilities detected within","accessLevel":"Read","resourceTypes":[]}},"resources":[],"conditionKeys":{}}

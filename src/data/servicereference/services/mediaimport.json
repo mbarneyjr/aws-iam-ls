@@ -1,0 +1,1 @@
+{"name":"mediaimport","actions":{"CreateDatabaseBinarySnapshot":{"conditionKeys":[],"resources":[],"description":"Grants permission to create a database binary snapshot on the customer's aws account","accessLevel":"Write","resourceTypes":[],"permissionOnly":true}},"resources":[],"conditionKeys":{}}

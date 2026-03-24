@@ -1,0 +1,1 @@
+{"name":"arsenal","actions":{"RegisterOnPremisesAgent":{"conditionKeys":[],"resources":[],"description":"Grants permission to register AWS provided data collectors to the Application Discovery Service","accessLevel":"Write","resourceTypes":[],"permissionOnly":true}},"resources":[],"conditionKeys":{}}

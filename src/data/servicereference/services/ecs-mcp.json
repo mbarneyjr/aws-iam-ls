@@ -1,0 +1,1 @@
+{"name":"ecs-mcp","actions":{"InvokeReadOnlyTools":{"conditionKeys":[],"resources":[],"description":"Grants permission to call read-only tools in MCP service","accessLevel":"Read","resourceTypes":[]},"UseMcp":{"conditionKeys":[],"resources":[],"description":"Grants permission to use MCP service","accessLevel":"Read","resourceTypes":[]}},"resources":[],"conditionKeys":{}}

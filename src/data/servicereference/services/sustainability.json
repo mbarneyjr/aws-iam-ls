@@ -1,0 +1,1 @@
+{"name":"sustainability","actions":{"GetCarbonFootprintSummary":{"conditionKeys":[],"resources":[],"description":"Grants permission to view the carbon footprint tool","accessLevel":"Read","resourceTypes":[]}},"resources":[],"conditionKeys":{}}

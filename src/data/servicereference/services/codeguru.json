@@ -1,0 +1,1 @@
+{"name":"codeguru","actions":{"GetCodeGuruFreeTrialSummary":{"conditionKeys":[],"resources":[],"description":"Grants permission to get free trial summary for the CodeGuru service which includes expiration date","accessLevel":"Read","resourceTypes":[],"permissionOnly":true}},"resources":[],"conditionKeys":{}}

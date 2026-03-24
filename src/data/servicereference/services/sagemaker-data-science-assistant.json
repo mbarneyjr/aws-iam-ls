@@ -1,0 +1,1 @@
+{"name":"sagemaker-data-science-assistant","actions":{"SendConversation":{"conditionKeys":[],"resources":[],"description":"Grants permission to start a conversation with SageMaker data science assistant","accessLevel":"Write","resourceTypes":[],"permissionOnly":true}},"resources":[],"conditionKeys":{}}

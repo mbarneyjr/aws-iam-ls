@@ -1,0 +1,1 @@
+{"name":"rhelkb","actions":{"GetRhelURL":{"conditionKeys":[],"resources":[],"description":"Grants permission to access the Red Hat Knowledgebase portal","accessLevel":"Read","resourceTypes":[]}},"resources":[],"conditionKeys":{}}
