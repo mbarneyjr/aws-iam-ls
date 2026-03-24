@@ -19,6 +19,7 @@
       perSystem =
         { pkgs, ... }:
         {
+          packages.grammars = pkgs.callPackage ./nix/grammars.nix { };
           packages.default = pkgs.callPackage ./nix/package.nix { };
 
           devShells.default = pkgs.mkShell {

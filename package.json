@@ -9,7 +9,8 @@
     "biome:fix": "biome check --write",
     "test": "node --test",
     "build": "tsc",
-    "clean": "find src -name '*.js' -o -name '*.d.ts' | grep -v node_modules | xargs rm -f"
+    "clean": "find src test-utils -name '*.js' -o -name '*.d.ts' | grep -v node_modules | xargs rm -f",
+    "grammars": "nix build .#grammars && rm -rf src/grammars && cp -rL result/ src/grammars && chmod -R u+w src/grammars && rm result"
   },
   "repository": {
     "type": "git",
