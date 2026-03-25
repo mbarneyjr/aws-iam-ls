@@ -57,7 +57,7 @@ export class TreeManager {
     const id = languageId.toLowerCase();
     if (id.startsWith('yaml')) return 'yaml';
     if (id.startsWith('json')) return 'json';
-    if (id === 'terraform' || id === 'hcl' || id === 'tofu') return 'hcl';
+    if (id === 'terraform' || id === 'hcl' || id === 'tofu' || id === 'opentofu') return 'hcl';
 
     if (uri.endsWith('.yaml') || uri.endsWith('.yml')) return 'yaml';
     if (uri.endsWith('.json')) return 'json';
