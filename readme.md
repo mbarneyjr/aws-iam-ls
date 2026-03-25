@@ -13,7 +13,7 @@ It supports policies written in
 
 ### Visual Studio Code
 
-Intsll the [extension](https://marketplace.visualstudio.com/items?itemName=MichaelBarney.aws-iam-ls).
+Install the [extension](https://marketplace.visualstudio.com/items?itemName=MichaelBarney.aws-iam-ls).
 
 ### Neovim, etc
 
