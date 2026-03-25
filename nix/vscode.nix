@@ -5,21 +5,21 @@
 }:
 
 buildNpmPackage {
-  pname = "aws-iam-ls-vscode";
+  pname = "aws-iam-language-server-vscode";
   version = "0.0.0";
   src = ./..;
-  npmDepsHash = "sha256-Q9HPXyxzGR1Ew+q2Yt+KrjRJsJK9jIxLOQ1h6CpeWkg=";
+  npmDepsHash = "sha256-mhFb8dFILuYkAPYQtbTNTuMomIuu8PUK/YFgkw0+TPI=";
   nativeBuildInputs = [ vsce ];
   buildPhase = ''
     runHook preBuild
     npm run build
-    vsce package -o aws-iam-ls.vsix
+    vsce package -o aws-iam-language-server.vsix
     runHook postBuild
   '';
   installPhase = ''
     runHook preInstall
     mkdir -p $out
-    cp aws-iam-ls.vsix $out/
+    cp aws-iam-language-server.vsix $out/
     runHook postInstall
   '';
   doCheck = true;
@@ -28,7 +28,7 @@ buildNpmPackage {
   '';
   meta = {
     description = "AWS IAM Policy Language Server - VS Code Extension";
-    homepage = "https://github.com/mbarneyjr/aws-iam-ls";
+    homepage = "https://github.com/mbarneyjr/aws-iam-language-server";
     license = lib.licenses.mit;
     platforms = [
       "x86_64-linux"

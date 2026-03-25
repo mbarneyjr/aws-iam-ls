@@ -12,7 +12,7 @@ export function activate(context: ExtensionContext) {
     debug: { module: serverModule, transport: TransportKind.stdio },
   };
 
-  client = new LanguageClient('aws-iam-ls', 'AWS IAM Language Server', serverOptions, {
+  client = new LanguageClient('aws-iam-language-server', 'AWS IAM Language Server', serverOptions, {
     documentSelector: [
       { scheme: 'file', language: 'json' },
       { scheme: 'file', language: 'yaml' },

@@ -13,26 +13,26 @@ It supports policies written in
 
 ### Visual Studio Code
 
-Install the [extension](https://marketplace.visualstudio.com/items?itemName=MichaelBarney.aws-iam-ls).
+Install the [extension](https://marketplace.visualstudio.com/items?itemName=MichaelBarney.aws-iam-language-server).
 
 ### Neovim, etc
 
 You can install the language server globally with npm:
 
 ```sh
-npm install -g aws-iam-ls
+npm install -g aws-iam-language-server
 ```
 
 And then you can set your editor up, for instance if you're running Neovim:
 
 ```lua
-vim.lsp.config("aws-iam-ls", {
-  cmd = { "aws-iam-ls", "--stdio" },
+vim.lsp.config("aws-iam-language-server", {
+  cmd = { "aws-iam-language-server", "--stdio" },
   filetypes = { "yaml", "yaml.cloudformation", "json", "json.cloudformation", "terraform", "tofu" },
   root_markers = { ".git" },
 })
 
-vim.lsp.enable("aws-iam-ls")
+vim.lsp.enable("aws-iam-language-server")
 ```
 
 ## Features

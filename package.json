@@ -1,5 +1,5 @@
 {
-  "name": "aws-iam-ls",
+  "name": "aws-iam-language-server",
   "version": "0.0.7",
   "type": "module",
   "bin": "./src/server.js",
@@ -31,13 +31,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mbarneyjr/aws-iam-ls.git"
+    "url": "git+https://github.com/mbarneyjr/aws-iam-language-server.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mbarneyjr/aws-iam-ls/issues"
+    "url": "https://github.com/mbarneyjr/aws-iam-language-server/issues"
   },
-  "homepage": "https://github.com/mbarneyjr/aws-iam-ls#readme",
+  "homepage": "https://github.com/mbarneyjr/aws-iam-language-server#readme",
   "devDependencies": {
     "@biomejs/biome": "^2.4.7",
     "@types/node": "^25.5.0",
