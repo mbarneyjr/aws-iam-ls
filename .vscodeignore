@@ -1,0 +1,17 @@
+.claude/
+.direnv/
+.editorconfig
+.envrc
+.gitignore
+.npmignore
+.nvim.lua
+**/*.ts
+!**/*.d.ts
+**/*.test.*
+biome.json
+flake.*
+nix/
+scraper/
+template.*
+test-utils/
+tsconfig.json

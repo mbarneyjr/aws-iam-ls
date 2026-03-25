@@ -20,7 +20,9 @@
         { pkgs, ... }:
         {
           packages.grammars = pkgs.callPackage ./nix/grammars.nix { };
-          packages.default = pkgs.callPackage ./nix/package.nix { };
+          packages.npm = pkgs.callPackage ./nix/npm.nix { };
+          packages.vscode = pkgs.callPackage ./nix/vscode.nix { };
+          packages.default = pkgs.callPackage ./nix/npm.nix { };
 
           devShells.default = pkgs.mkShell {
             packages = [
