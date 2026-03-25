@@ -17,6 +17,7 @@ export function activate(context: ExtensionContext) {
       { scheme: 'file', language: 'json' },
       { scheme: 'file', language: 'yaml' },
       { scheme: 'file', language: 'terraform' },
+      { scheme: 'file', language: 'OpenTofu' },
     ],
   });
 
