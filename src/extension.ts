@@ -13,12 +13,7 @@ export function activate(context: ExtensionContext) {
   };
 
   client = new LanguageClient('aws-iam-language-server', 'AWS IAM Language Server', serverOptions, {
-    documentSelector: [
-      { scheme: 'file', language: 'json' },
-      { scheme: 'file', language: 'yaml' },
-      { scheme: 'file', language: 'terraform' },
-      { scheme: 'file', language: 'opentofu' },
-    ],
+    documentSelector: [{ language: 'json' }, { language: 'yaml' }, { language: 'terraform' }, { language: 'opentofu' }],
   });
 
   client.start();
