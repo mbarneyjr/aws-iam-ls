@@ -3,6 +3,7 @@
 import { createConnection, ProposedFeatures, TextDocumentSyncKind, TextDocuments } from 'vscode-languageserver/node.js';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { handleCompletionRequest } from './handlers/completion/index.ts';
+import { documentLinkHandler } from './handlers/document-link/document-link.ts';
 import { TreeManager } from './lib/treesitter/manager.ts';
 
 const connection = createConnection(ProposedFeatures.all);
@@ -18,6 +19,7 @@ connection.onInitialize(async () => {
         triggerCharacters: ['"', ':', '*'],
       },
       hoverProvider: false,
+      documentLinkProvider: {},
     },
   };
 });
@@ -27,6 +29,7 @@ documents.onDidChangeContent(({ document }) => treeManager.updateDocument(docume
 documents.onDidClose(({ document }) => treeManager.closeDocument(document.uri));
 
 connection.onCompletion((params) => handleCompletionRequest(params, documents, treeManager));
+connection.onDocumentLinks((params) => documentLinkHandler(params, documents, treeManager));
 
 documents.listen(connection);
 connection.listen();
