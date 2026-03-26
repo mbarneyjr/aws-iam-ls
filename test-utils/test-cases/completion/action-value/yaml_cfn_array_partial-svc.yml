@@ -1,9 +1,9 @@
 ---
 includes:
-  - s3:GetObject
-  - s3-outposts:CreateBucket
+  - s3
+  - s3-outposts
 excludes:
-  - lambda:InvokeFunction
+  - lambda
   - Sid
   - Effect
   - Principal

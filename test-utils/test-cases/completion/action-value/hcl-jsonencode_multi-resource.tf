@@ -1,7 +1,7 @@
 ---
 includes:
-  - s3:GetObject
-  - lambda:InvokeFunction
+  - s3
+  - lambda
 ---
 resource "aws_iam_policy" "s3_read_only_policy" {
   policy = jsonencode({

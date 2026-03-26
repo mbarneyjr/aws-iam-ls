@@ -700,6 +700,23 @@ export class TreeYaml extends TreeBase {
         const keyText = this.#getScalarText(child);
         if (!keyText) continue;
 
+        // Cursor within the key text — still typing the key
+        if (position.column < child.endPosition.column) {
+          const partial = keyText.slice(0, position.column - child.startPosition.column);
+          return {
+            keys: [],
+            role: 'key',
+            partial,
+            value: partial,
+            policyFormat: 'standard',
+          };
+        }
+
+        // Cursor at key end — key is complete but ":" hasn't been typed yet
+        if (position.column === child.endPosition.column) {
+          return null;
+        }
+
         return {
           keys: [keyText],
           role: 'value',

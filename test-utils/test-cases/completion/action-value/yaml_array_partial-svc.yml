@@ -1,7 +1,8 @@
 ---
 includes:
-  - s3:GetObject
+  - s3
 excludes:
+  - lambda
   - lambda:InvokeFunction
   - Sid
   - Effect

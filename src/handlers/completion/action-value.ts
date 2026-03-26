@@ -6,31 +6,46 @@ import type { Action } from '../../lib/iam-policy/reference/types.ts';
 import { type CompletionContext, partialRange } from './index.ts';
 
 export function completeActionValue(location: ActionValueLocation, context: CompletionContext): CompletionList {
-  const potentialLabels = ServiceReference.getAllActions();
   const range = partialRange(context.position, location.partial.length);
   const items: CompletionItem[] = [];
-  for (const label of potentialLabels) {
-    if (location.partial && !label.toLowerCase().startsWith(location.partial.toLowerCase())) continue;
-    const item: CompletionItem = {
-      label,
-      kind: CompletionItemKind.Enum,
-      textEdit: { range, newText: label },
-    };
-    const [service, actionName] = label.split(':');
-    if (service && actionName) {
-      const action = ServiceReference.getAction(service, actionName);
-      if (action) {
-        item.detail = action.description;
-        if (action.description) {
-          item.documentation = {
-            kind: MarkupKind.Markdown,
-            value: formatActionDocumentation(action),
-          };
-        }
-      }
+
+  const parts = location.partial.split(':');
+
+  if (parts.length === 1) {
+    // suggest services
+    const potentialServices = ServiceReference.getAllServices();
+    for (const service of potentialServices) {
+      if (!service.toLowerCase().startsWith(location.partial.toLowerCase())) continue;
+      const item: CompletionItem = {
+        label: service,
+        kind: CompletionItemKind.Enum,
+        textEdit: { range, newText: service },
+      };
+      items.push(item);
     }
-    items.push(item);
+  } else if (parts.length === 2) {
+    // suggest actions
+    const serviceName = parts[0];
+    const potentialActions = ServiceReference.getActionsForService(serviceName);
+    for (const action of potentialActions) {
+      const label = `${action.service}:${action.name}`;
+      if (!label.toLowerCase().startsWith(location.partial.toLowerCase())) continue;
+      const item: CompletionItem = {
+        label,
+        kind: CompletionItemKind.Enum,
+        textEdit: { range, newText: label },
+      };
+      if (action.description) {
+        item.detail = action.description;
+        item.documentation = {
+          kind: MarkupKind.Markdown,
+          value: formatActionDocumentation(action),
+        };
+      }
+      items.push(item);
+    }
   }
+
   return { items, isIncomplete: false };
 }
 

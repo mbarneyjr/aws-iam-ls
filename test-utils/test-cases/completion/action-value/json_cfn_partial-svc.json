@@ -1,7 +1,7 @@
 ---
 includes:
-  - s3:GetObject
-  - lambda:InvokeFunction
+  - s3
+  - lambda
 excludes:
   - Sid
   - Effect
@@ -31,7 +31,9 @@ excludes:
                   "Action": [
                     "$0
                   ],
-                  "Resource": ["*"]
+                  "Resource": [
+                    "*"
+                  ]
                 }
               ]
             }

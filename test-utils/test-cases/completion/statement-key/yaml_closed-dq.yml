@@ -1,7 +1,6 @@
 ---
-includes:
-  - s3:GetObject
-  - lambda:InvokeFunction
+exact: true
+includes: []
 ---
 Statement:
   - Effect: Allow
