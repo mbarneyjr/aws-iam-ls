@@ -4,11 +4,12 @@ import type { ConditionKeyLocation } from '../../lib/iam-policy/location.ts';
 import { ServiceReference } from '../../lib/iam-policy/reference/services.ts';
 import type { ConditionKey, GlobalConditionKey } from '../../lib/iam-policy/reference/types.ts';
 import { expandActionPattern } from '../../lib/iam-policy/wildcard.ts';
-import type { CompletionContext } from './index.ts';
+import { type CompletionContext, partialRange } from './index.ts';
 
 export function completeConditionKey(location: ConditionKeyLocation, context: CompletionContext): CompletionList {
   const statement = context.handler.getStatementContext(context.uri, context.position);
   const existingKeys = location.operator ? Object.keys(statement?.Condition?.[location.operator] ?? {}) : [];
+  const range = partialRange(context.position, location.partial.length);
   const items: CompletionItem[] = [];
   const seen = new Set<string>();
 
@@ -40,6 +41,7 @@ export function completeConditionKey(location: ConditionKeyLocation, context: Co
       items.push({
         label: key.name,
         kind: CompletionItemKind.Property,
+        textEdit: { range, newText: key.name },
         documentation: {
           kind: MarkupKind.Markdown,
           value: formatDocumentation(key.types, global, conditionKeyData),
@@ -57,6 +59,7 @@ export function completeConditionKey(location: ConditionKeyLocation, context: Co
     items.push({
       label: global.name,
       kind: CompletionItemKind.Property,
+      textEdit: { range, newText: global.name },
       documentation: {
         kind: MarkupKind.Markdown,
         value: formatDocumentation([], global),

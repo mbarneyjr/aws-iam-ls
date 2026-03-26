@@ -1,7 +1,7 @@
 import type { CompletionItem, CompletionList } from 'vscode-languageserver';
 import { CompletionItemKind, MarkupKind } from 'vscode-languageserver';
 import type { ConditionBlockLocation } from '../../lib/iam-policy/location.ts';
-import type { CompletionContext } from './index.ts';
+import { type CompletionContext, partialRange } from './index.ts';
 
 const conditionBlockAttributes: Record<string, { description: string }> = {
   test: {
@@ -17,6 +17,7 @@ const conditionBlockAttributes: Record<string, { description: string }> = {
 
 export function completeConditionBlock(location: ConditionBlockLocation, context: CompletionContext): CompletionList {
   const siblingKeys = context.handler.getSiblingKeys(context.uri, context.position);
+  const range = partialRange(context.position, location.partial.length);
   const items: CompletionItem[] = [];
   for (const [name, attr] of Object.entries(conditionBlockAttributes)) {
     if (siblingKeys.includes(name)) continue;
@@ -24,6 +25,7 @@ export function completeConditionBlock(location: ConditionBlockLocation, context
     items.push({
       label: name,
       kind: CompletionItemKind.Field,
+      textEdit: { range, newText: name },
       documentation: {
         kind: MarkupKind.Markdown,
         value: attr.description,

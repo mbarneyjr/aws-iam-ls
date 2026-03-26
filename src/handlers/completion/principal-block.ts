@@ -1,7 +1,7 @@
 import type { CompletionItem, CompletionList } from 'vscode-languageserver';
 import { CompletionItemKind, MarkupKind } from 'vscode-languageserver';
 import type { PrincipalBlockLocation } from '../../lib/iam-policy/location.ts';
-import type { CompletionContext } from './index.ts';
+import { type CompletionContext, partialRange } from './index.ts';
 
 const principalBlockAttributes: Record<string, { description: string }> = {
   type: {
@@ -14,6 +14,7 @@ const principalBlockAttributes: Record<string, { description: string }> = {
 
 export function completePrincipalBlock(location: PrincipalBlockLocation, context: CompletionContext): CompletionList {
   const siblingKeys = context.handler.getSiblingKeys(context.uri, context.position);
+  const range = partialRange(context.position, location.partial.length);
   const items: CompletionItem[] = [];
   for (const [name, attr] of Object.entries(principalBlockAttributes)) {
     if (siblingKeys.includes(name)) continue;
@@ -21,6 +22,7 @@ export function completePrincipalBlock(location: PrincipalBlockLocation, context
     items.push({
       label: name,
       kind: CompletionItemKind.Field,
+      textEdit: { range, newText: name },
       documentation: {
         kind: MarkupKind.Markdown,
         value: attr.description,

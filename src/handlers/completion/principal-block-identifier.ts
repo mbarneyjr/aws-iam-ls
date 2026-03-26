@@ -5,7 +5,7 @@ import { completePrincipalIdentifier } from './principal-identifier-completions.
 
 export function completePrincipalBlockIdentifier(
   location: PrincipalBlockIdentifierLocation,
-  _context: CompletionContext,
+  context: CompletionContext,
 ): CompletionList {
-  return completePrincipalIdentifier(location.principalType, location.partial);
+  return completePrincipalIdentifier(location.principalType, location.partial, context.position);
 }

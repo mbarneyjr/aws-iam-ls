@@ -28,6 +28,13 @@ export type CompletionContext = {
 
 const emptyResult: CompletionList = { items: [], isIncomplete: false };
 
+export function partialRange(position: { line: number; column: number }, partialLength: number) {
+  return {
+    start: { line: position.line, character: position.column - partialLength },
+    end: { line: position.line, character: position.column },
+  };
+}
+
 export async function handleCompletionRequest(
   params: CompletionParams,
   _documents: TextDocuments<TextDocument>,
@@ -99,7 +106,7 @@ function handleLocationCompletion(location: PolicyLocation, context: CompletionC
 }
 
 function toSnippet(item: CompletionItem): CompletionItem {
-  const text = item.insertText ?? item.label;
+  const text = item.textEdit && 'range' in item.textEdit ? item.textEdit.newText : (item.insertText ?? item.label);
   const snippetPlaceholderPattern = /\$\{([^}]+)\}/g;
   if (!snippetPlaceholderPattern.test(text)) return item;
 
@@ -112,7 +119,11 @@ function toSnippet(item: CompletionItem): CompletionItem {
     return `\${${seen.get(name)}:${name}}`;
   });
 
-  item.insertText = snippetText;
+  if (item.textEdit && 'range' in item.textEdit) {
+    item.textEdit.newText = snippetText;
+  } else {
+    item.insertText = snippetText;
+  }
   item.insertTextFormat = InsertTextFormat.Snippet;
   return item;
 }

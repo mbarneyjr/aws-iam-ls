@@ -4,10 +4,11 @@ import type { ResourceValueLocation } from '../../lib/iam-policy/location.ts';
 import { partitions } from '../../lib/iam-policy/partitions.ts';
 import { ServiceReference } from '../../lib/iam-policy/reference/services.ts';
 import { expandActionPattern } from '../../lib/iam-policy/wildcard.ts';
-import type { CompletionContext } from './index.ts';
+import { type CompletionContext, partialRange } from './index.ts';
 
 export function completeResourceValue(location: ResourceValueLocation, context: CompletionContext): CompletionList {
   const parts = location.partial.split(':');
+  const range = partialRange(context.position, location.partial.length);
   const items: Array<CompletionItem> = [];
   const statement = context.handler.getStatementContext(context.uri, context.position);
   const statementActions = statement?.Action ?? statement?.NotAction ?? [];
@@ -19,6 +20,7 @@ export function completeResourceValue(location: ResourceValueLocation, context: 
       label: arn,
       sortText: `0-${arn}`,
       kind: CompletionItemKind.Value,
+      textEdit: { range, newText: arn },
       detail: `${resource.service}/${resource.name}`,
       documentation: {
         kind: 'markdown',
@@ -34,6 +36,7 @@ export function completeResourceValue(location: ResourceValueLocation, context: 
       items.push({
         label,
         kind: CompletionItemKind.Constant,
+        textEdit: { range, newText: label },
       });
     }
   } else if (parts.length === 2) {
@@ -103,9 +106,11 @@ export function completeResourceValue(location: ResourceValueLocation, context: 
     }
   } else if (parts.length === 5) {
     // suggest account
+    const label = `${location.partial}:`;
     items.push({
-      label: `${location.partial}:`,
+      label,
       kind: CompletionItemKind.Enum,
+      textEdit: { range, newText: label },
       documentation: {
         kind: 'markdown',
         value: 'AWS Account ID',
@@ -131,6 +136,7 @@ export function completeResourceValue(location: ResourceValueLocation, context: 
       items.push({
         label,
         kind: CompletionItemKind.Enum,
+        textEdit: { range, newText: label },
         detail: resource.name,
         documentation: {
           kind: 'markdown',

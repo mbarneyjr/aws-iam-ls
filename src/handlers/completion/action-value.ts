@@ -3,16 +3,18 @@ import { CompletionItemKind, MarkupKind } from 'vscode-languageserver';
 import type { ActionValueLocation } from '../../lib/iam-policy/location.ts';
 import { ServiceReference } from '../../lib/iam-policy/reference/services.ts';
 import type { Action } from '../../lib/iam-policy/reference/types.ts';
-import type { CompletionContext } from './index.ts';
+import { type CompletionContext, partialRange } from './index.ts';
 
-export function completeActionValue(location: ActionValueLocation, _context: CompletionContext): CompletionList {
+export function completeActionValue(location: ActionValueLocation, context: CompletionContext): CompletionList {
   const potentialLabels = ServiceReference.getAllActions();
+  const range = partialRange(context.position, location.partial.length);
   const items: CompletionItem[] = [];
   for (const label of potentialLabels) {
     if (location.partial && !label.toLowerCase().startsWith(location.partial.toLowerCase())) continue;
     const item: CompletionItem = {
       label,
       kind: CompletionItemKind.Enum,
+      textEdit: { range, newText: label },
     };
     const [service, actionName] = label.split(':');
     if (service && actionName) {

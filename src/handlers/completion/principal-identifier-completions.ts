@@ -2,6 +2,7 @@ import type { CompletionItem, CompletionList } from 'vscode-languageserver';
 import { CompletionItemKind } from 'vscode-languageserver';
 import { partitions } from '../../lib/iam-policy/partitions.ts';
 import { principalTypes } from '../../lib/iam-policy/principals.ts';
+import { partialRange } from './index.ts';
 
 const PARTITION_PLACEHOLDER = `\${Partition}`;
 const REGION_PLACEHOLDER = `\${Region}`;
@@ -36,17 +37,22 @@ function getPatternsForType(principalType: string): { arn: string[]; nonArn: str
   }
 }
 
-export function completePrincipalIdentifier(principalType: string | null, partial: string): CompletionList {
+export function completePrincipalIdentifier(
+  principalType: string | null,
+  partial: string,
+  position: { line: number; column: number },
+): CompletionList {
   if (!principalType) return { items: [], isIncomplete: false };
 
   const config = getPatternsForType(principalType);
   if (!config) return { items: [], isIncomplete: false };
 
+  const range = partialRange(position, partial.length);
   const items: CompletionItem[] = [];
 
   if (!partial) {
     for (const pattern of [...config.nonArn, ...config.arn]) {
-      items.push({ label: pattern, kind: CompletionItemKind.Value });
+      items.push({ label: pattern, kind: CompletionItemKind.Value, textEdit: { range, newText: pattern } });
     }
     return { items, isIncomplete: false };
   }
@@ -55,11 +61,11 @@ export function completePrincipalIdentifier(principalType: string | null, partia
 
   if (parts.length === 1) {
     if (config.arn.length > 0 && 'arn'.startsWith(partial.toLowerCase())) {
-      items.push({ label: 'arn', kind: CompletionItemKind.Constant });
+      items.push({ label: 'arn', kind: CompletionItemKind.Constant, textEdit: { range, newText: 'arn' } });
     }
     for (const pattern of config.nonArn) {
       if (pattern.toLowerCase().startsWith(partial.toLowerCase())) {
-        items.push({ label: pattern, kind: CompletionItemKind.Value });
+        items.push({ label: pattern, kind: CompletionItemKind.Value, textEdit: { range, newText: pattern } });
       }
     }
   } else if (parts.length === 2) {
@@ -108,9 +114,11 @@ export function completePrincipalIdentifier(principalType: string | null, partia
       }
     }
   } else if (parts.length === 5) {
+    const label = `${partial}:`;
     items.push({
-      label: `${partial}:`,
+      label,
       kind: CompletionItemKind.Enum,
+      textEdit: { range, newText: label },
       documentation: { kind: 'markdown', value: 'AWS Account ID' },
     });
   } else {
@@ -130,7 +138,7 @@ export function completePrincipalIdentifier(principalType: string | null, partia
         .replace(REGION_PLACEHOLDER, region)
         .replace(ACCOUNT_PLACEHOLDER, account);
       if (!label.toLowerCase().startsWith(partial.toLowerCase())) continue;
-      items.push({ label, kind: CompletionItemKind.Value });
+      items.push({ label, kind: CompletionItemKind.Value, textEdit: { range, newText: label } });
     }
   }
 
