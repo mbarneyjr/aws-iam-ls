@@ -54,6 +54,7 @@ async function scrapeAndMerge(slug: string): Promise<void> {
   if (!existsSync(servicePath)) return;
 
   const serviceData: ServiceData = JSON.parse(readFileSync(servicePath, 'utf-8'));
+  serviceData.url = `${BASE_URL}/${slug}`;
 
   const actionDocs = parseActionsTable($);
   for (const [name, docs] of Object.entries(actionDocs)) {
