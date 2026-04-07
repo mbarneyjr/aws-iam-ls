@@ -33,9 +33,7 @@ export function documentLinkHandler(
           const action = ServiceReference.getAction(value.text);
           if (!action) continue;
 
-          const start = { line: value.range.start.line, character: value.range.start.column };
-          const end = { line: value.range.end.line, character: value.range.end.column };
-          const range = { start, end };
+          const range = value.range;
 
           if (action.iamUrl) {
             links.push({

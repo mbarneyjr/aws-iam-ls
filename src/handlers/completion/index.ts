@@ -23,15 +23,15 @@ import { completeStatementKey } from './statement-key.ts';
 export type CompletionContext = {
   handler: TreeBase;
   uri: string;
-  position: { line: number; column: number };
+  position: { line: number; character: number };
 };
 
 const emptyResult: CompletionList = { items: [], isIncomplete: false };
 
-export function partialRange(position: { line: number; column: number }, partialLength: number) {
+export function partialRange(position: { line: number; character: number }, partialLength: number) {
   return {
-    start: { line: position.line, character: position.column - partialLength },
-    end: { line: position.line, character: position.column },
+    start: { line: position.line, character: position.character - partialLength },
+    end: { line: position.line, character: position.character },
   };
 }
 
@@ -44,7 +44,7 @@ export async function handleCompletionRequest(
   const handler = treeManager.getLanguageHandler(params.textDocument.uri);
   if (!handler) return emptyResult;
 
-  const position = { line: params.position.line, column: params.position.character };
+  const position = params.position;
   const cursorContext = handler.getCursorContext(params.textDocument.uri, position);
   if (!cursorContext) return emptyResult;
 
@@ -66,7 +66,7 @@ export async function handleCompletionRequest(
   result.items = result.items.map(toSnippet);
 
   connection.console.debug(
-    `Found ${result.items.length} completion items for ${params.textDocument.uri} at line ${position.line}, column ${position.column}`,
+    `Found ${result.items.length} completion items for ${params.textDocument.uri} at line ${position.line}, character ${position.character}`,
   );
 
   return result;

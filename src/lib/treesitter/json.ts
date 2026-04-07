@@ -24,7 +24,9 @@ export class TreeJson extends TreeBase {
     if (!node) return null;
 
     const nodeBefore =
-      position.column > 0 ? this.getNodeAtPosition(uri, { line: position.line, column: position.column - 1 }) : null;
+      position.character > 0
+        ? this.getNodeAtPosition(uri, { line: position.line, character: position.character - 1 })
+        : null;
 
     // Cursor right after closing quote — no completions
     if (this.#isCursorAfterClosingQuote(nodeBefore)) return null;
@@ -52,8 +54,8 @@ export class TreeJson extends TreeBase {
     if (!node) return null;
 
     let statementObject = this.#findStatementObject(node);
-    if (!statementObject && position.column > 0) {
-      const nodeBefore = this.getNodeAtPosition(uri, { line: position.line, column: position.column - 1 });
+    if (!statementObject && position.character > 0) {
+      const nodeBefore = this.getNodeAtPosition(uri, { line: position.line, character: position.character - 1 });
       if (nodeBefore) statementObject = this.#findStatementObject(nodeBefore);
     }
     if (!statementObject) return null;
@@ -66,8 +68,8 @@ export class TreeJson extends TreeBase {
     if (!node) return [];
 
     let statementObject = this.#findStatementObject(node);
-    if (!statementObject && position.column > 0) {
-      const nodeBefore = this.getNodeAtPosition(uri, { line: position.line, column: position.column - 1 });
+    if (!statementObject && position.character > 0) {
+      const nodeBefore = this.getNodeAtPosition(uri, { line: position.line, character: position.character - 1 });
       if (nodeBefore) statementObject = this.#findStatementObject(nodeBefore);
     }
     if (!statementObject) return [];
@@ -203,8 +205,8 @@ export class TreeJson extends TreeBase {
     const valueNode = pair.namedChildren[1];
     if (!valueNode) {
       return {
-        start: { line: pair.endPosition.row, column: pair.endPosition.column },
-        end: { line: pair.endPosition.row, column: pair.endPosition.column },
+        start: { line: pair.endPosition.row, character: pair.endPosition.column },
+        end: { line: pair.endPosition.row, character: pair.endPosition.column },
       };
     }
     return nodeRange(valueNode);
@@ -274,9 +276,9 @@ export class TreeJson extends TreeBase {
     }
 
     if (role === null) role = 'key';
-    const { partial, value } = this.#extractPartialAndValue(cursorNode, position);
+    const { partial, value, range } = this.#extractPartialAndValue(cursorNode, position);
 
-    return { keys, role, partial, value };
+    return { keys, role, partial, value, range };
   }
 
   /**
@@ -388,15 +390,16 @@ export class TreeJson extends TreeBase {
    * Extract the partial text (up to cursor) and full value from the nearest
    * string_content node.
    */
-  #extractPartialAndValue(node: Node, position: Position): { partial: string; value: string } {
+  #extractPartialAndValue(node: Node, position: Position): { partial: string; value: string; range?: Range } {
     let current: Node | null = node;
     while (current) {
       if (current.type === 'string_content') {
         const value = current.text;
+        const range = nodeRange(current);
         if (position.line === current.startPosition.row) {
-          return { partial: value.slice(0, position.column - current.startPosition.column), value };
+          return { partial: value.slice(0, position.character - current.startPosition.column), value, range };
         }
-        return { partial: value, value };
+        return { partial: value, value, range };
       }
       if (current.type === 'object' || current.type === 'pair') break;
       current = current.parent;

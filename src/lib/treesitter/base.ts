@@ -1,14 +1,10 @@
+import type { Position, Range } from 'vscode-languageserver';
 import type { Language, Node, Tree } from 'web-tree-sitter';
 import { Parser } from 'web-tree-sitter';
 
 await Parser.init();
 
-export type Position = {
-  line: number;
-  column: number;
-};
-
-export type Range = { start: Position; end: Position };
+export type { Position, Range };
 
 export type StatementValue = {
   text: string;
@@ -36,8 +32,8 @@ export type PolicyDocumentNode = {
 
 export function nodeRange(node: Node): Range {
   return {
-    start: { line: node.startPosition.row, column: node.startPosition.column },
-    end: { line: node.endPosition.row, column: node.endPosition.column },
+    start: { line: node.startPosition.row, character: node.startPosition.column },
+    end: { line: node.endPosition.row, character: node.endPosition.column },
   };
 }
 
@@ -48,6 +44,7 @@ export type CursorContext = {
   role: 'key' | 'value';
   partial: string;
   value: string;
+  range?: Range;
   policyFormat: PolicyFormat;
 };
 
@@ -105,7 +102,7 @@ export class TreeBase {
 
     const node = tree.rootNode.descendantForPosition({
       row: position.line,
-      column: position.column,
+      column: position.character,
     });
     return node;
   }

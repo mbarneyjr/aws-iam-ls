@@ -24,7 +24,9 @@ export class TreeHcl extends TreeBase {
     if (!node) return null;
 
     const nodeBefore =
-      position.column > 0 ? this.getNodeAtPosition(uri, { line: position.line, column: position.column - 1 }) : null;
+      position.character > 0
+        ? this.getNodeAtPosition(uri, { line: position.line, character: position.character - 1 })
+        : null;
 
     // Try jsonencode mode first (more specific structure)
     const jsonencodeContext = this.#tryJsonencodeMode(node, nodeBefore, position);
@@ -193,8 +195,8 @@ export class TreeHcl extends TreeBase {
         const valueRange: Range = expression
           ? nodeRange(expression)
           : {
-              start: { line: child.endPosition.row, column: child.endPosition.column },
-              end: { line: child.endPosition.row, column: child.endPosition.column },
+              start: { line: child.endPosition.row, character: child.endPosition.column },
+              end: { line: child.endPosition.row, character: child.endPosition.column },
             };
 
         entries.push({ key: id.text, keyRange, values, valueRange });
@@ -264,8 +266,8 @@ export class TreeHcl extends TreeBase {
       const valueRange: Range = valueExpression
         ? nodeRange(valueExpression)
         : {
-            start: { line: child.endPosition.row, column: child.endPosition.column },
-            end: { line: child.endPosition.row, column: child.endPosition.column },
+            start: { line: child.endPosition.row, character: child.endPosition.column },
+            end: { line: child.endPosition.row, character: child.endPosition.column },
           };
 
       const nestedKeys = new Set(['Condition', 'Principal', 'NotPrincipal']);
@@ -336,8 +338,8 @@ export class TreeHcl extends TreeBase {
       const valueRange: Range = valueExpression
         ? nodeRange(valueExpression)
         : {
-            start: { line: child.endPosition.row, column: child.endPosition.column },
-            end: { line: child.endPosition.row, column: child.endPosition.column },
+            start: { line: child.endPosition.row, character: child.endPosition.column },
+            end: { line: child.endPosition.row, character: child.endPosition.column },
           };
 
       let nestedObject: Node | undefined;
@@ -456,8 +458,8 @@ export class TreeHcl extends TreeBase {
     }
 
     if (role === null) role = 'key';
-    const { partial, value } = this.#extractJsonencodePartialAndValue(cursorNode, position);
-    return { keys, role, partial, value };
+    const { partial, value, range } = this.#extractJsonencodePartialAndValue(cursorNode, position);
+    return { keys, role, partial, value, range };
   }
 
   #getObjectElemKey(element: Node): string | null {
@@ -485,15 +487,16 @@ export class TreeHcl extends TreeBase {
       .filter((key): key is string => key !== null);
   }
 
-  #extractJsonencodePartialAndValue(node: Node, position: Position): { partial: string; value: string } {
+  #extractJsonencodePartialAndValue(node: Node, position: Position): { partial: string; value: string; range?: Range } {
     let current: Node | null = node;
     while (current) {
       if (current.type === 'identifier' || current.type === 'template_literal') {
         const value = current.text;
+        const range = nodeRange(current);
         if (position.line === current.startPosition.row) {
-          return { partial: value.slice(0, position.column - current.startPosition.column), value };
+          return { partial: value.slice(0, position.character - current.startPosition.column), value, range };
         }
-        return { partial: value, value };
+        return { partial: value, value, range };
       }
       if (current.type === 'object' || current.type === 'object_elem') break;
       current = current.parent;
@@ -522,7 +525,7 @@ export class TreeHcl extends TreeBase {
     }
 
     // Cursor is on the block itself (outside body span) — statement-key level
-    const { partial, value } = this.#extractBlockPartialAndValue(node, position);
+    const { partial, value, range } = this.#extractBlockPartialAndValue(node, position);
 
     // Check for incomplete attributes on the same line (may be in ERROR nodes
     // when tree-sitter can't parse the body due to a missing value)
@@ -549,6 +552,7 @@ export class TreeHcl extends TreeBase {
       role: 'key',
       partial,
       value,
+      range,
       policyFormat: 'hcl-block',
     };
   }
@@ -643,8 +647,8 @@ export class TreeHcl extends TreeBase {
     }
 
     if (role === null) role = 'key';
-    const { partial, value } = this.#extractBlockPartialAndValue(cursorNode, position);
-    return { keys, role, partial, value };
+    const { partial, value, range } = this.#extractBlockPartialAndValue(cursorNode, position);
+    return { keys, role, partial, value, range };
   }
 
   #findEnclosingBlock(node: Node, blockName: string, statementBody: Node): Node | null {
@@ -698,15 +702,16 @@ export class TreeHcl extends TreeBase {
     );
   }
 
-  #extractBlockPartialAndValue(node: Node, position: Position): { partial: string; value: string } {
+  #extractBlockPartialAndValue(node: Node, position: Position): { partial: string; value: string; range?: Range } {
     let current: Node | null = node;
     while (current) {
       if (current.type === 'identifier' || current.type === 'template_literal') {
         const value = current.text;
+        const range = nodeRange(current);
         if (position.line === current.startPosition.row) {
-          return { partial: value.slice(0, position.column - current.startPosition.column), value };
+          return { partial: value.slice(0, position.character - current.startPosition.column), value, range };
         }
-        return { partial: value, value };
+        return { partial: value, value, range };
       }
       if (current.type === 'body' || current.type === 'attribute' || current.type === 'block') break;
       current = current.parent;
@@ -763,7 +768,7 @@ export class TreeHcl extends TreeBase {
         (child) =>
           child.type === 'quoted_template_start' &&
           child.startPosition.row === position.line &&
-          child.endPosition.column <= position.column,
+          child.endPosition.column <= position.character,
       );
     if (!hasQuoteOnLine) return null;
 
@@ -858,11 +863,12 @@ export class TreeHcl extends TreeBase {
     // extract from the template_literal. Otherwise extract from ERROR node text.
     let partial = '';
     let value = '';
+    let range: Range | undefined;
     if (!lastKeyFromAttribute) {
       if (this.#isInsideQuote(node)) {
-        ({ partial, value } = this.#extractQuotedPartialAndValue(node, position));
+        ({ partial, value, range } = this.#extractQuotedPartialAndValue(node, position));
       } else if (nodeBefore && this.#isInsideQuote(nodeBefore)) {
-        ({ partial, value } = this.#extractQuotedPartialAndValue(nodeBefore, position));
+        ({ partial, value, range } = this.#extractQuotedPartialAndValue(nodeBefore, position));
       } else {
         ({ partial, value } = this.#extractPartialAndValueFromErrorNode(errorNode, position));
       }
@@ -884,6 +890,7 @@ export class TreeHcl extends TreeBase {
       role: 'value',
       partial,
       value,
+      range,
       policyFormat,
     };
   }
@@ -892,15 +899,16 @@ export class TreeHcl extends TreeBase {
    * Extract partial from inside a quoted string (when the open quote caused
    * tree-sitter to slurp subsequent lines into a string_lit).
    */
-  #extractQuotedPartialAndValue(node: Node, position: Position): { partial: string; value: string } {
+  #extractQuotedPartialAndValue(node: Node, position: Position): { partial: string; value: string; range?: Range } {
     let current: Node | null = node;
     while (current) {
       if (current.type === 'template_literal') {
         const value = current.text;
+        const range = nodeRange(current);
         if (position.line === current.startPosition.row) {
-          return { partial: value.slice(0, position.column - current.startPosition.column), value };
+          return { partial: value.slice(0, position.character - current.startPosition.column), value, range };
         }
-        return { partial: '', value };
+        return { partial: '', value, range };
       }
       if (current.type === 'quoted_template_start') return { partial: '', value: '' };
       if (current.type === 'string_lit') {
@@ -920,9 +928,9 @@ export class TreeHcl extends TreeBase {
       // Only consider children that end on the same line (multi-line children
       // like attributes have endPosition from a different row)
       if (child.endPosition.row !== position.line) continue;
-      if (child.endPosition.column <= position.column) {
+      if (child.endPosition.column <= position.character) {
         afterColumn = child.endPosition.column;
-      } else if (nextChildColumn === null && child.startPosition.column > position.column) {
+      } else if (nextChildColumn === null && child.startPosition.column > position.character) {
         nextChildColumn = child.startPosition.column;
       }
     }
@@ -932,7 +940,7 @@ export class TreeHcl extends TreeBase {
     if (lineIndex < 0 || lineIndex >= lines.length) return { partial: '', value: '' };
     const line = lines[lineIndex];
     const startColumn = lineIndex === 0 ? errorNode.startPosition.column : 0;
-    const partial = line.slice(afterColumn - startColumn, position.column - startColumn);
+    const partial = line.slice(afterColumn - startColumn, position.character - startColumn);
     const valueEnd = nextChildColumn !== null ? nextChildColumn - startColumn : line.length;
     const value = line.slice(afterColumn - startColumn, valueEnd);
     return { partial, value };

@@ -24,7 +24,9 @@ export class TreeYaml extends TreeBase {
     if (!node) return null;
 
     const nodeBefore =
-      position.column > 0 ? this.getNodeAtPosition(uri, { line: position.line, column: position.column - 1 }) : null;
+      position.character > 0
+        ? this.getNodeAtPosition(uri, { line: position.line, character: position.character - 1 })
+        : null;
 
     const root = this.getTree(uri)?.rootNode;
     if (!root) return null;
@@ -218,8 +220,8 @@ export class TreeYaml extends TreeBase {
     if (pair.namedChildren.length < 2) {
       // No value — zero-width range at key end
       return {
-        start: { line: pair.endPosition.row, column: pair.endPosition.column },
-        end: { line: pair.endPosition.row, column: pair.endPosition.column },
+        start: { line: pair.endPosition.row, character: pair.endPosition.column },
+        end: { line: pair.endPosition.row, character: pair.endPosition.column },
       };
     }
     return nodeRange(pair.namedChildren[1]);
@@ -271,9 +273,9 @@ export class TreeYaml extends TreeBase {
     for (const mapping of candidates) {
       const pastEnd =
         position.line > mapping.endPosition.row ||
-        (position.line === mapping.endPosition.row && position.column >= mapping.endPosition.column);
+        (position.line === mapping.endPosition.row && position.character >= mapping.endPosition.column);
       if (!pastEnd) continue;
-      if (position.column < mapping.startPosition.column) continue;
+      if (position.character < mapping.startPosition.column) continue;
 
       // Don't extend across sibling statement items. If a sibling block_sequence_item
       // starts between this mapping's end and the cursor, the cursor is in a different statement.
@@ -319,12 +321,13 @@ export class TreeYaml extends TreeBase {
   #resolveExtendedContext(cursorNode: Node, statementMapping: Node, position: Position): CursorContext | null {
     const resolved = this.#resolveWithinMapping(statementMapping, position);
     if (!resolved) return null;
-    const { partial, value } = this.#extractPartialAndValue(cursorNode, position);
+    const { partial, value, range } = this.#extractPartialAndValue(cursorNode, position);
     return {
       keys: resolved.keys,
       role: resolved.role,
       partial,
       value,
+      range,
       policyFormat: 'standard',
     };
   }
@@ -453,7 +456,7 @@ export class TreeYaml extends TreeBase {
         const keyColumn = ancestorMapping
           ? ancestorMapping.startPosition.column
           : statementMapping.startPosition.column;
-        if (position.column > keyColumn) return null;
+        if (position.character > keyColumn) return null;
       }
     }
 
@@ -486,7 +489,7 @@ export class TreeYaml extends TreeBase {
             child.type === 'block_mapping_pair' &&
             child.startPosition.row === position.line &&
             child.namedChildren.length === 1 &&
-            position.column > child.endPosition.column,
+            position.character > child.endPosition.column,
         );
         if (pairOnLine) {
           const pairKey = this.#getPairKeyText(pairOnLine);
@@ -501,7 +504,7 @@ export class TreeYaml extends TreeBase {
         // When cursor lands on an inner block_mapping (not the statement mapping),
         // check if the cursor is actually outside this mapping (column < key column).
         // If so, skip it — the cursor belongs to a parent mapping level.
-        if (current.id !== statementMapping.id && position.column < current.startPosition.column) {
+        if (current.id !== statementMapping.id && position.character < current.startPosition.column) {
           previous = current;
           current = current.parent;
           continue;
@@ -548,7 +551,7 @@ export class TreeYaml extends TreeBase {
           // is typing a new sibling key, not editing this pair's value.
           const parentMapping = current.parent;
           const isAtParentKeyColumn =
-            parentMapping?.type === 'block_mapping' && position.column === parentMapping.startPosition.column;
+            parentMapping?.type === 'block_mapping' && position.character === parentMapping.startPosition.column;
 
           if (isOnKey || isAtParentKeyColumn) {
             role = 'key';
@@ -578,11 +581,15 @@ export class TreeYaml extends TreeBase {
     }
 
     if (role === null) role = 'key';
-    const { partial: extractedPartial, value: extractedValue } = this.#extractPartialAndValue(cursorNode, position);
+    const {
+      partial: extractedPartial,
+      value: extractedValue,
+      range,
+    } = this.#extractPartialAndValue(cursorNode, position);
     const partial = colonPartial || extractedPartial;
     const value = colonPartial ? colonPartial : extractedValue;
 
-    return { keys, role, partial, value };
+    return { keys, role, partial, value, range };
   }
 
   /**
@@ -591,8 +598,8 @@ export class TreeYaml extends TreeBase {
    */
   #resolveWithinMapping(mapping: Node, position: Position): { keys: string[]; role: 'key' | 'value' } | null {
     const keyColumn = mapping.startPosition.column;
-    if (position.column < keyColumn) return null;
-    if (position.column === keyColumn) return { keys: [], role: 'key' };
+    if (position.character < keyColumn) return null;
+    if (position.character === keyColumn) return { keys: [], role: 'key' };
 
     let pairBeforeCursor: Node | null = null;
     for (const child of mapping.namedChildren) {
@@ -627,7 +634,7 @@ export class TreeYaml extends TreeBase {
       if (
         valueSequence &&
         position.line <= valueSequence.endPosition.row &&
-        position.column >= valueSequence.startPosition.column
+        position.character >= valueSequence.startPosition.column
       ) {
         return { keys: [pairKey], role: 'value' };
       }
@@ -779,11 +786,11 @@ export class TreeYaml extends TreeBase {
    * Extract the partial text (up to cursor) and full value from the nearest
    * scalar node.
    */
-  #extractPartialAndValue(node: Node, position: Position): { partial: string; value: string } {
+  #extractPartialAndValue(node: Node, position: Position): { partial: string; value: string; range?: Range } {
     let current: Node | null = node;
     while (current) {
       if (current.type === 'string_scalar') {
-        return this.#sliceToPositionAndValue(current.text, current.startPosition.column, position, node);
+        return this.#sliceToPositionAndValue(current.text, current.startPosition.column, position, node, current);
       }
       if (current.type === 'double_quote_scalar' || current.type === 'single_quote_scalar') {
         return this.#sliceToPositionAndValue(
@@ -791,6 +798,7 @@ export class TreeYaml extends TreeBase {
           current.startPosition.column + 1,
           position,
           node,
+          current,
         );
       }
       if (current.type === 'block_mapping' || current.type === 'block_mapping_pair') break;
@@ -804,11 +812,12 @@ export class TreeYaml extends TreeBase {
     startColumn: number,
     position: Position,
     node: Node,
-  ): { partial: string; value: string } {
+    scalarNode: Node,
+  ): { partial: string; value: string; range: Range } {
     if (position.line === node.startPosition.row) {
-      return { partial: text.slice(0, position.column - startColumn), value: text };
+      return { partial: text.slice(0, position.character - startColumn), value: text, range: nodeRange(scalarNode) };
     }
-    return { partial: text, value: text };
+    return { partial: text, value: text, range: nodeRange(scalarNode) };
   }
 
   /**
@@ -854,8 +863,8 @@ export class TreeYaml extends TreeBase {
         if (!keyText) continue;
 
         // Cursor within the key text — still typing the key
-        if (position.column < child.endPosition.column) {
-          const partial = keyText.slice(0, position.column - child.startPosition.column);
+        if (position.character < child.endPosition.column) {
+          const partial = keyText.slice(0, position.character - child.startPosition.column);
           return {
             keys: [],
             role: 'key',
@@ -866,7 +875,7 @@ export class TreeYaml extends TreeBase {
         }
 
         // Cursor at key end — key is complete but ":" hasn't been typed yet
-        if (position.column === child.endPosition.column) {
+        if (position.character === child.endPosition.column) {
           return null;
         }
 
@@ -888,7 +897,7 @@ export class TreeYaml extends TreeBase {
         const valueText = this.#getPairValueText(child) ?? '';
         // If cursor is past the ERROR end (colon continuation), append ":"
         const colonSuffix =
-          errorNode.endPosition.row === position.line && position.column > errorNode.endPosition.column ? ':' : '';
+          errorNode.endPosition.row === position.line && position.character > errorNode.endPosition.column ? ':' : '';
 
         const fullValue = valueText + colonSuffix;
         return {
@@ -939,9 +948,9 @@ export class TreeYaml extends TreeBase {
     let nextChildColumn: number | null = null;
     for (const child of errorNode.children) {
       if (child.startPosition.row !== position.line) continue;
-      if (child.endPosition.column <= position.column) {
+      if (child.endPosition.column <= position.character) {
         afterColumn = child.endPosition.column;
-      } else if (nextChildColumn === null && child.startPosition.column > position.column) {
+      } else if (nextChildColumn === null && child.startPosition.column > position.character) {
         nextChildColumn = child.startPosition.column;
       }
     }
@@ -952,7 +961,7 @@ export class TreeYaml extends TreeBase {
     if (lineIndex < 0 || lineIndex >= lines.length) return { partial: '', value: '' };
     const line = lines[lineIndex];
     const startColumn = lineIndex === 0 ? errorNode.startPosition.column : 0;
-    const partial = line.slice(afterColumn - startColumn, position.column - startColumn);
+    const partial = line.slice(afterColumn - startColumn, position.character - startColumn);
     const valueEnd = nextChildColumn !== null ? nextChildColumn - startColumn : line.length;
     const value = line.slice(afterColumn - startColumn, valueEnd);
     return { partial, value };

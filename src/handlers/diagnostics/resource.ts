@@ -13,11 +13,11 @@ function segmentRange(value: StatementValue, segmentIndex: number): Range {
   for (let i = 0; i < segmentIndex; i++) {
     offset += segments[i].length + 1;
   }
-  const startColumn = value.range.start.column + offset;
-  const endColumn = startColumn + segments[segmentIndex].length;
+  const startCharacter = value.range.start.character + offset;
+  const endCharacter = startCharacter + segments[segmentIndex].length;
   return {
-    start: { line: value.range.start.line, column: startColumn },
-    end: { line: value.range.start.line, column: endColumn },
+    start: { line: value.range.start.line, character: startCharacter },
+    end: { line: value.range.start.line, character: endCharacter },
   };
 }
 
@@ -33,7 +33,9 @@ function validateArn(value: StatementValue): Array<Diagnostic> {
     if (partition === '') {
       diagnostics.push(createDiagnostic('partition is required', segmentRange(value, 1)));
     } else if (partition !== '*' && !Object.keys(partitions).includes(partition)) {
-      diagnostics.push(createDiagnostic(`partition must be one of: ${[...validPartitions].join(',')}`, segmentRange(value, 1)));
+      diagnostics.push(
+        createDiagnostic(`partition must be one of: ${[...validPartitions].join(',')}`, segmentRange(value, 1)),
+      );
     }
   }
 
