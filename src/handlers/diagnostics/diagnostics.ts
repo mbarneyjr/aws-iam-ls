@@ -41,9 +41,10 @@ async function handleStandardDiagnostics(policyDocument: PolicyDocumentNode): Pr
   const resourceValidator = new ResourceValidator();
   const conditionValidator = new ConditionValidator();
   for (const statement of policyDocument.statements) {
+    const isResourcePolicy = statement.entries.some((e) => e.key === 'Principal' || e.key === 'NotPrincipal');
     for (const entry of statement.entries) {
       if (entry.key === 'Sid') {
-        diagnostics = diagnostics.concat(sidValidator.validate(entry));
+        diagnostics = diagnostics.concat(sidValidator.validate(entry, isResourcePolicy));
       } else if (entry.key === 'Effect') {
         diagnostics = diagnostics.concat(effectValidator.validate(entry));
       } else if (entry.key === 'Principal' || entry.key === 'NotPrincipal') {
@@ -93,9 +94,10 @@ async function handleHclBlockDiagnostics(policyDocument: PolicyDocumentNode): Pr
   const resourceValidator = new ResourceValidator();
   const conditionValidator = new ConditionValidator();
   for (const statement of policyDocument.statements) {
+    const isResourcePolicy = statement.entries.some((e) => e.key === 'principals' || e.key === 'not_principals');
     for (const entry of statement.entries) {
       if (entry.key === 'sid') {
-        diagnostics = diagnostics.concat(sidValidator.validate(entry));
+        diagnostics = diagnostics.concat(sidValidator.validate(entry, isResourcePolicy));
       } else if (entry.key === 'effect') {
         diagnostics = diagnostics.concat(effectValidator.validate(entry));
       } else if (entry.key === 'principals' || entry.key === 'not_principals') {

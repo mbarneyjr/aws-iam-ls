@@ -78,6 +78,7 @@ This language server will provide diagnostics for some IAM policy issues, includ
 - no missing keys in a statement, (effect, action, resource or effect, action, principal)
 - no duplicate keys in a statement (including "not" variants like action/not action)
 - ensuring `Sid` uniqueness within a policy document
+- `Sid` values are valid (alphanumeric for identity policies, allow spaces in resource policies)
 - effect has a valid value
 - defined actions are valid, or wildcards resolve to valid actions
 - arn parts are valid (partition, region, account id)
