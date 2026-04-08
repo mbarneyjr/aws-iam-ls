@@ -59,6 +59,17 @@ This language server provides completion on:
 - condition operators (`StringLike`, `ForAnyValue:*`, etc)
 - condition keys (global keys like `aws:RequestTag/${TagKey}`, action-specific keys like `s3:TlsVersion`)
 
+### Hover
+
+Hovering over elements within a policy document will show contextual documentation:
+
+- actions (access level, resource types, condition keys, and dependent actions)
+- resources (matched resource type from the service reference with ARN format and condition keys)
+- principal types (description of `AWS`, `Service`, `Federated`, `CanonicalUser`)
+- principal values (identifies account IDs, role/user ARNs, service principals, federated providers)
+- condition operators (description of what each operator does, like `StringEquals`, `ArnLike`, `IpAddress`, etc.)
+- condition keys (documentation for global keys like `aws:SourceIp` and service-specific keys like `s3:prefix`)
+
 ### Diagnostics
 
 This language server will provide diagnostics for some IAM policy issues, including:
