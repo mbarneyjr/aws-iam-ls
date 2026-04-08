@@ -1,0 +1,8 @@
+---
+includes:
+  - All principals
+---
+Statement:
+  - Effect: Allow
+    Principal:
+      AWS: "$0*"

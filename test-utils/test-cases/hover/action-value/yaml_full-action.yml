@@ -1,0 +1,9 @@
+---
+includes:
+  - "s3:GetObject"
+  - Access Level
+---
+Statement:
+  - Effect: Allow
+    Action:
+      - s3:Get$0Object

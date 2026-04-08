@@ -1,0 +1,7 @@
+---
+isNull: true
+---
+Statement:
+  - Effect: Allow
+    Action:
+      - s3:Fake$0Action

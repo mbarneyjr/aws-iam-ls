@@ -49,7 +49,7 @@ export function completeActionValue(location: ActionValueLocation, context: Comp
   return { items, isIncomplete: false };
 }
 
-function formatActionDocumentation(action: Action): string {
+export function formatActionDocumentation(action: Action): string {
   const parts: string[] = [];
 
   if (action.accessLevel) parts.push(`**Access Level**: ${action.accessLevel}`);

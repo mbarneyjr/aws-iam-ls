@@ -1,0 +1,12 @@
+---
+includes:
+  - s3:prefix
+---
+Statement:
+  - Effect: Allow
+    Action:
+      - s3:GetObject
+    Resource: "*"
+    Condition:
+      StringEquals:
+        s3:pre$0fix: "home/"

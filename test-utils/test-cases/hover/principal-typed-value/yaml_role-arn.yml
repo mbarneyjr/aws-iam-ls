@@ -1,0 +1,9 @@
+---
+includes:
+  - IAM role
+  - role/my-role
+---
+Statement:
+  - Effect: Allow
+    Principal:
+      AWS: "arn:aws:iam::123456789012:role/my-$0role"

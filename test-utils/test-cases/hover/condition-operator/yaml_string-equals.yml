@@ -1,0 +1,13 @@
+---
+includes:
+  - Exact matching
+  - case sensitive
+---
+Statement:
+  - Effect: Allow
+    Action:
+      - s3:GetObject
+    Resource: "*"
+    Condition:
+      String$0Equals:
+        s3:prefix: "home/"

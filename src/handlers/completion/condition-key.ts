@@ -44,7 +44,7 @@ export function completeConditionKey(location: ConditionKeyLocation, context: Co
         textEdit: { range, newText: key.name },
         documentation: {
           kind: MarkupKind.Markdown,
-          value: formatDocumentation(key.types, global, conditionKeyData),
+          value: formatConditionKeyDocumentation(key.types, global, conditionKeyData),
         },
       });
     }
@@ -62,7 +62,7 @@ export function completeConditionKey(location: ConditionKeyLocation, context: Co
       textEdit: { range, newText: global.name },
       documentation: {
         kind: MarkupKind.Markdown,
-        value: formatDocumentation([], global),
+        value: formatConditionKeyDocumentation([], global),
       },
     });
   }
@@ -70,7 +70,7 @@ export function completeConditionKey(location: ConditionKeyLocation, context: Co
   return { items, isIncomplete: false };
 }
 
-function formatDocumentation(
+export function formatConditionKeyDocumentation(
   types: string[],
   global: GlobalConditionKey | undefined,
   conditionKey?: ConditionKey,

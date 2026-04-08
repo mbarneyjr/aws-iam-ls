@@ -1,0 +1,18 @@
+---
+includes:
+  - aws:PrincipalArn
+---
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "*",
+      "Condition": {
+        "ArnEquals": {
+          "aws:Princip$0alArn": "arn:aws:iam::123456789012:role/my-role"
+        }
+      }
+    }
+  ]
+}

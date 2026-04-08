@@ -1,0 +1,13 @@
+---
+includes:
+  - ARN matching
+  - wildcard
+---
+Statement:
+  - Effect: Allow
+    Action:
+      - s3:GetObject
+    Resource: "*"
+    Condition:
+      Arn$0Like:
+        aws:SourceArn: "arn:aws:s3:::my-bucket/*"

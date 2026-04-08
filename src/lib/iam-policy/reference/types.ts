@@ -65,6 +65,12 @@ export type Action = {
   iamUrl?: string;
 };
 
+export type ResourceDef = {
+  name: string;
+  arnFormats: Array<string>;
+  conditionKeys: Array<string>;
+};
+
 export type ConditionKey = {
   types: Array<string>;
   description?: string;

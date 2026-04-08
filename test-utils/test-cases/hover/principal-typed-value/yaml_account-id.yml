@@ -1,0 +1,9 @@
+---
+includes:
+  - AWS account
+  - 123456789012
+---
+Statement:
+  - Effect: Allow
+    Principal:
+      AWS: "12345678$09012"

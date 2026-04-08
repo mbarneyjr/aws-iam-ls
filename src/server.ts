@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 
-import { createConnection, ProposedFeatures, TextDocumentSyncKind, TextDocuments } from 'vscode-languageserver/node.js';
+import { createConnection, TextDocumentSyncKind, TextDocuments } from 'vscode-languageserver/node.js';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { handleCompletionRequest } from './handlers/completion/index.ts';
 import { diagnosticsHandler } from './handlers/diagnostics/diagnostics.ts';
 import { documentLinkHandler } from './handlers/document-link/document-link.ts';
+import { hoverHandler } from './handlers/hover/index.ts';
 import { TreeManager } from './lib/treesitter/manager.ts';
 
-const connection = createConnection(ProposedFeatures.all);
+const connection = createConnection();
 const documents = new TextDocuments(TextDocument);
 const treeManager = new TreeManager(connection);
 
@@ -19,7 +20,7 @@ connection.onInitialize(async () => {
       completionProvider: {
         triggerCharacters: ['"', ':', '*'],
       },
-      hoverProvider: false,
+      hoverProvider: true,
       documentLinkProvider: {},
     },
   };
@@ -39,6 +40,7 @@ documents.onDidClose(async ({ document }) => {
 
 connection.onCompletion((params) => handleCompletionRequest(params, documents, treeManager, connection));
 connection.onDocumentLinks((params) => documentLinkHandler(params, documents, treeManager, connection));
+connection.onHover((params) => hoverHandler(params, treeManager, connection));
 
 documents.listen(connection);
 connection.listen();

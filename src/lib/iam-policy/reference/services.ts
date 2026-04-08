@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
-import type { Action, ConditionKey, GlobalConditionKey, ServiceData } from './types.ts';
+import { type ArnParts, arnMatches, parseArn } from '../arn.ts';
+import type { Action, ConditionKey, GlobalConditionKey, ResourceDef, ServiceData } from './types.ts';
 
 export class ServiceReference {
   static #serviceDataMap: Record<string, ServiceData> = {};
@@ -8,44 +9,62 @@ export class ServiceReference {
   static #servicePrincipals: Array<string>;
   static #globalConditionKeys: Array<GlobalConditionKey>;
 
-  static getServiceData(service: string): ServiceData {
+  static getServiceData(service: string): ServiceData | undefined {
     if (!ServiceReference.#serviceDataMap[service]) {
-      ServiceReference.#serviceDataMap[service] = JSON.parse(
-        readFileSync(`${import.meta.dirname}/../../../data/servicereference/services/${service}.json`, 'utf-8'),
-      );
+      try {
+        ServiceReference.#serviceDataMap[service] = JSON.parse(
+          readFileSync(`${import.meta.dirname}/../../../data/servicereference/services/${service}.json`, 'utf-8'),
+        );
+      } catch {
+        return undefined;
+      }
     }
     return ServiceReference.#serviceDataMap[service];
   }
 
-  static getServicePrincipals() {
+  static getServicePrincipals(): Array<string> {
     if (!ServiceReference.#servicePrincipals) {
-      ServiceReference.#servicePrincipals = JSON.parse(
-        readFileSync(`${import.meta.dirname}/../../../data/servicereference/service-principals.json`, 'utf-8'),
-      );
+      try {
+        ServiceReference.#servicePrincipals = JSON.parse(
+          readFileSync(`${import.meta.dirname}/../../../data/servicereference/service-principals.json`, 'utf-8'),
+        );
+      } catch {
+        return [];
+      }
     }
     return ServiceReference.#servicePrincipals;
   }
 
   static getAllActions(): Array<string> {
     if (!ServiceReference.#allActions) {
-      ServiceReference.#allActions = JSON.parse(
-        readFileSync(`${import.meta.dirname}/../../../data/servicereference/actions.json`, 'utf-8'),
-      );
+      try {
+        ServiceReference.#allActions = JSON.parse(
+          readFileSync(`${import.meta.dirname}/../../../data/servicereference/actions.json`, 'utf-8'),
+        );
+      } catch {
+        return [];
+      }
     }
     return ServiceReference.#allActions;
   }
 
   static getAllServices(): Array<string> {
     if (!ServiceReference.#allServices) {
-      ServiceReference.#allServices = JSON.parse(
-        readFileSync(`${import.meta.dirname}/../../../data/servicereference/services.json`, 'utf-8'),
-      );
+      try {
+        ServiceReference.#allServices = JSON.parse(
+          readFileSync(`${import.meta.dirname}/../../../data/servicereference/services.json`, 'utf-8'),
+        );
+      } catch {
+        return [];
+      }
     }
     return ServiceReference.#allServices;
   }
 
   static getActionsForService(service: string): Array<Action> {
-    return Object.entries(ServiceReference.getServiceData(service).actions).map(([actionName, action]) => {
+    const serviceData = ServiceReference.getServiceData(service);
+    if (!serviceData) return [];
+    return Object.entries(serviceData.actions).map(([actionName, action]) => {
       if (!action.name) action.name = `${service}:${actionName}`;
       return action;
     });
@@ -56,6 +75,7 @@ export class ServiceReference {
     for (const action of actions) {
       const [service, actionName] = action.split(':');
       const serviceData = ServiceReference.getServiceData(service);
+      if (!serviceData) continue;
       const actionDef = serviceData.actions[actionName];
       if (actionDef?.conditionKeys) {
         for (const keyName of actionDef.conditionKeys) {
@@ -72,29 +92,41 @@ export class ServiceReference {
 
   static getGlobalConditionKeys(): Array<GlobalConditionKey> {
     if (!ServiceReference.#globalConditionKeys) {
-      ServiceReference.#globalConditionKeys = JSON.parse(
-        readFileSync(`${import.meta.dirname}/../../../data/condition-keys/global.json`, 'utf-8'),
-      );
+      try {
+        ServiceReference.#globalConditionKeys = JSON.parse(
+          readFileSync(`${import.meta.dirname}/../../../data/condition-keys/global.json`, 'utf-8'),
+        );
+      } catch {
+        return [];
+      }
     }
     return ServiceReference.#globalConditionKeys;
   }
 
   static getAction(action: string): Action | undefined {
-    try {
-      const serviceName = action.split(':')[0];
-      const actionName = action.split(':')[1];
-      return ServiceReference.getServiceData(serviceName).actions[actionName];
-    } catch {
-      return undefined;
-    }
+    const serviceName = action.split(':')[0];
+    const actionName = action.split(':')[1];
+    return ServiceReference.getServiceData(serviceName)?.actions[actionName];
   }
 
   static getConditionKey(service: string, keyName: string): ConditionKey | undefined {
-    try {
-      return ServiceReference.getServiceData(service).conditionKeys[keyName];
-    } catch {
-      return undefined;
+    return ServiceReference.getServiceData(service)?.conditionKeys[keyName];
+  }
+
+  static getResources(arn: ArnParts): ResourceDef[] {
+    const serviceData = ServiceReference.getServiceData(arn.service);
+    if (!serviceData) return [];
+    const matches: ResourceDef[] = [];
+    for (const resource of serviceData.resources) {
+      for (const format of resource.arnFormats) {
+        const templateArn = parseArn(format);
+        if (templateArn && arnMatches(arn, templateArn)) {
+          matches.push(resource);
+          break;
+        }
+      }
     }
+    return matches;
   }
 
   static getResourcesForActions(actions: string[]) {
@@ -102,6 +134,7 @@ export class ServiceReference {
     for (const action of actions) {
       const [service, actionName] = action.split(':');
       const serviceData = ServiceReference.getServiceData(service);
+      if (!serviceData) continue;
       const actionDef = serviceData.actions[actionName];
       if (!actionDef?.resources) continue;
       for (const actionResource of actionDef.resources) {

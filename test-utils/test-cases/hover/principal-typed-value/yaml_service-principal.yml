@@ -1,0 +1,9 @@
+---
+includes:
+  - service principal
+  - ecs
+---
+Statement:
+  - Effect: Allow
+    Principal:
+      Service: "ecs.amazon$0aws.com"

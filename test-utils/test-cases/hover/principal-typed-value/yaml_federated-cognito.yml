@@ -1,0 +1,9 @@
+---
+includes:
+  - Federated identity
+  - Cognito
+---
+Statement:
+  - Effect: Allow
+    Principal:
+      Federated: "cognito-identity$0.amazonaws.com"

@@ -1,0 +1,8 @@
+---
+includes:
+  - required element
+  - Allow
+  - Deny
+---
+Statement:
+  - Eff$0ect: Allow

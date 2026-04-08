@@ -1,0 +1,9 @@
+---
+includes:
+  - SAML
+  - OpenID Connect
+---
+Statement:
+  - Effect: Allow
+    Principal:
+      Feder$0ated: "cognito-identity.amazonaws.com"

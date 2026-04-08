@@ -1,0 +1,11 @@
+---
+includes:
+  - Grants access
+---
+{
+  "Statement": [
+    {
+      "Effect": "Al$0low"
+    }
+  ]
+}

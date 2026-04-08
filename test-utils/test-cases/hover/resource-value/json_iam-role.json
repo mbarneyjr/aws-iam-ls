@@ -1,0 +1,13 @@
+---
+includes:
+  - role
+---
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": "arn:aws:iam::123456789012:ro$0le/my-role"
+    }
+  ]
+}

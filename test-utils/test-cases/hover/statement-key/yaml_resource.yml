@@ -1,0 +1,10 @@
+---
+includes:
+  - object or objects
+  - ARN
+---
+Statement:
+  - Effect: Allow
+    Action:
+      - s3:GetObject
+    Reso$0urce: "*"

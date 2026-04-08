@@ -40,7 +40,7 @@ function getPatternsForType(principalType: string): { arn: string[]; nonArn: str
 export function completePrincipalIdentifier(
   principalType: string | null,
   partial: string,
-  position: { line: number; column: number },
+  position: { line: number; character: number },
 ): CompletionList {
   if (!principalType) return { items: [], isIncomplete: false };
 

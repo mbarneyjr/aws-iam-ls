@@ -1,0 +1,13 @@
+---
+includes:
+  - "s3:PutObject"
+  - Access Level
+---
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "s3:Put$0Object"
+    }
+  ]
+}

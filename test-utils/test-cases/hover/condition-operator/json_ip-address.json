@@ -1,0 +1,19 @@
+---
+includes:
+  - IP address
+  - CIDR
+---
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "*",
+      "Condition": {
+        "Ip$0Address": {
+          "aws:SourceIp": "192.168.1.0/24"
+        }
+      }
+    }
+  ]
+}

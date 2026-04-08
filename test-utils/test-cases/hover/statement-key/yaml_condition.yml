@@ -1,0 +1,13 @@
+---
+includes:
+  - optional element
+  - Operator
+  - ConditionKey
+---
+Statement:
+  - Effect: Allow
+    Action:
+      - s3:GetObject
+    Cond$0ition:
+      StringEquals:
+        s3:prefix: "home/"

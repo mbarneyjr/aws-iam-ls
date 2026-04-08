@@ -1,0 +1,8 @@
+---
+includes:
+  - service principal
+---
+Statement:
+  - Effect: Allow
+    Principal:
+      Serv$0ice: "ecs.amazonaws.com"

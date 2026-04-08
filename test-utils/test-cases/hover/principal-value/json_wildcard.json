@@ -1,0 +1,12 @@
+---
+includes:
+  - unauthenticated
+---
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": "$0*"
+    }
+  ]
+}

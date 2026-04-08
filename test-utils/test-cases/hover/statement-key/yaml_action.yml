@@ -1,0 +1,9 @@
+---
+includes:
+  - "service:action"
+  - case-insensitive
+---
+Statement:
+  - Effect: Allow
+    Act$0ion:
+      - s3:GetObject

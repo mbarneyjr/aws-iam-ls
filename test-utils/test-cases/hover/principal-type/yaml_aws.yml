@@ -1,0 +1,10 @@
+---
+includes:
+  - IAM user
+  - IAM role
+---
+Statement:
+  - Effect: Allow
+    Principal:
+      AW$0S:
+        - "arn:aws:iam::123456789012:root"

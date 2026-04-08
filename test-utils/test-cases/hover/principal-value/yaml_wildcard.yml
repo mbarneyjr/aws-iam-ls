@@ -1,0 +1,8 @@
+---
+includes:
+  - unauthenticated
+  - Warning
+---
+Statement:
+  - Effect: Allow
+    Principal: "$0*"

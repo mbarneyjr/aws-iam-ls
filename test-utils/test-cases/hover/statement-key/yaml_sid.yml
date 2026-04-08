@@ -1,0 +1,8 @@
+---
+includes:
+  - optional identifier
+  - unique
+---
+Statement:
+  - Si$0d: MyStatement
+    Effect: Allow
