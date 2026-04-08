@@ -1,6 +1,6 @@
 {
   "name": "aws-iam-language-server",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "type": "module",
   "bin": "./src/server.js",
   "publisher": "MichaelBarney",
