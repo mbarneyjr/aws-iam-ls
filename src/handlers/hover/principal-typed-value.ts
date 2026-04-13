@@ -1,4 +1,5 @@
 import { type Hover, MarkupKind } from 'vscode-languageserver';
+import { splitArn } from '../../lib/iam-policy/arn.ts';
 import type { PrincipalBlockIdentifierLocation, PrincipalTypedValueLocation } from '../../lib/iam-policy/location.ts';
 import {
   formatPrincipalTypedValueDocumentation,
@@ -46,7 +47,7 @@ export function handlePrincipalTypedValueHover(
     }
 
     if (location.value.startsWith('arn:')) {
-      const parts = location.value.split(':');
+      const parts = splitArn(location.value);
       const resource = parts.slice(5).join(':');
       if (resource.startsWith('root')) {
         return {
@@ -89,7 +90,7 @@ export function handlePrincipalTypedValueHover(
 
   if (principalType === 'Federated') {
     if (location.value.startsWith('arn:')) {
-      const resource = location.value.split(':').slice(5).join(':');
+      const resource = splitArn(location.value).slice(5).join(':');
       if (resource.startsWith('oidc-provider/')) {
         return {
           range: location.range,

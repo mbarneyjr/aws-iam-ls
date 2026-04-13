@@ -1,5 +1,6 @@
 import type { Diagnostic } from 'vscode-languageclient';
 import { isRuleEnabled } from '../../lib/config.ts';
+import { splitArn } from '../../lib/iam-policy/arn.ts';
 import { isRegionValidForPartition, isValidPartition, partitions } from '../../lib/iam-policy/partitions.ts';
 import type { Range, StatementEntry, StatementValue } from '../../lib/treesitter/base.ts';
 import { ElementValidator } from './base.ts';
@@ -9,7 +10,7 @@ const validPartitions = Object.keys(partitions);
 const accountIdPattern = /^\d{12}$/;
 
 function segmentRange(value: StatementValue, segmentIndex: number): Range {
-  const segments = value.text.split(':');
+  const segments = splitArn(value.text);
   let offset = 0;
   for (let i = 0; i < segmentIndex; i++) {
     offset += segments[i].length + 1;
@@ -28,7 +29,7 @@ function validateArn(value: StatementValue): Array<Diagnostic> {
 
   if (!text.startsWith('arn:')) return [];
 
-  const segments = text.split(':');
+  const segments = splitArn(text);
   if (segments.length > 1 && isRuleEnabled('INVALID_PARTITION')) {
     const partition = segments[1];
     if (partition === '') {

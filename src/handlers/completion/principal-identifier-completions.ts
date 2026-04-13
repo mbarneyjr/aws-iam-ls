@@ -1,5 +1,6 @@
 import type { CompletionItem, CompletionList } from 'vscode-languageserver';
 import { CompletionItemKind, MarkupKind } from 'vscode-languageserver';
+import { splitArn } from '../../lib/iam-policy/arn.ts';
 import { partitions } from '../../lib/iam-policy/partitions.ts';
 import { principalTypes } from '../../lib/iam-policy/principals.ts';
 import { partialRange } from './index.ts';
@@ -57,7 +58,7 @@ export function completePrincipalIdentifier(
     return { items, isIncomplete: false };
   }
 
-  const parts = partial.split(':');
+  const parts = splitArn(partial);
 
   if (parts.length === 1) {
     if (config.arn.length > 0 && 'arn'.startsWith(partial.toLowerCase())) {
@@ -87,7 +88,7 @@ export function completePrincipalIdentifier(
       }
     }
   } else if (parts.length === 3) {
-    const services = [...new Set(config.arn.map((pattern) => pattern.split(':')[2]))];
+    const services = [...new Set(config.arn.map((pattern) => splitArn(pattern)[2]))];
     for (const service of services) {
       if (`${parts[0]}:${parts[1]}:${service}`.toLowerCase().startsWith(partial.toLowerCase())) {
         items.push({ label: service, kind: CompletionItemKind.Enum });
@@ -95,8 +96,8 @@ export function completePrincipalIdentifier(
     }
   } else if (parts.length === 4) {
     const service = parts[2];
-    const serviceArns = config.arn.filter((pattern) => pattern.split(':')[2] === service);
-    const hasRegionArn = serviceArns.some((pattern) => pattern.split(':')[3].length > 0);
+    const serviceArns = config.arn.filter((pattern) => splitArn(pattern)[2] === service);
+    const hasRegionArn = serviceArns.some((pattern) => splitArn(pattern)[3].length > 0);
     if (!hasRegionArn) {
       items.push({
         label: ':',
@@ -132,7 +133,7 @@ export function completePrincipalIdentifier(
     const region = parts[3];
     const account = parts[4];
     const matching = config.arn.filter((pattern) => {
-      const patternParts = pattern.split(':');
+      const patternParts = splitArn(pattern);
       if (patternParts[2] !== service) return false;
       if (region.length > 0 !== patternParts[3].length > 0) return false;
       if (account.length > 0 !== patternParts[4].length > 0) return false;
