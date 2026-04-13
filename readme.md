@@ -55,6 +55,10 @@ vim.lsp.enable("aws-iam-language-server")
 
 ## Features
 
+This language server will detect policies within yaml/json documents, including deeply-nested policies.
+This means it will work for polcies defined as CloudFormation resources or plain policy files.
+Detection of a policy does require that you have a `Version` set to a valid version date: `2012-10-17` or `2008-10-17`).
+
 ### DocumentLink
 
 Certain elements within a policy document will have a document link associated with it.
